@@ -1,72 +1,91 @@
-import Header from '../components/Header.jsx';
-import { useNavigate } from 'react-router-dom';
-import {useDispatch} from 'react-redux';
-import {addBook} from '../store/booksSlice.js';
+import Header from "../components/Header.jsx";
+import { useNavigate } from "react-router-dom";
+import { db } from "../firebase/config.js";
+import { collection, addDoc } from "firebase/firestore";
+import { useState } from "react";
+import { Ellipsis, Ring } from "react-css-spinners";
 
 function AddBookPage() {
+  const [issubmitComment, setsubmitComment] = useState(false);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const handleAddBook = async (e) => {
+    try {
+      e.preventDefault();
 
-    function handleAddBook(e) {
-        e.preventDefault();
+      const newBook = {
+        title: document.querySelector("input[name=title]").value,
+        isRead: false,
+        author: document.querySelector("input[name=author]").value,
+        synopsis: document.querySelector("textarea[name=synopsis]").value,
+      };
 
-        const newBook = {
-            title: document.querySelector('input[name=title]').value,
-            cover: document.querySelector('input[name=cover]').value,
-            isRead: false,
-            author: document.querySelector('input[name=author]').value,
-            synopsis: document.querySelector('textarea[name=synopsis]').value
-        }
-
-        if (newBook.title && newBook.cover && newBook.author) {
-            dispatch(addBook(newBook));
-            alert('Book created successfully!');
-            navigate("/");
-        } else {
-            alert('Please fill the mandatory fields.');
-        }
-
+      if (newBook.title && newBook.author) {
+        setsubmitComment(true);
+        const docRef = await addDoc(collection(db, "review-request"), newBook);
+        console.log(docRef);
+        setsubmitComment(false);
+        alert("Request successful!");
+      } else {
+        alert("Please fill the mandatory fields.");
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error("Error adding book:", error);
+      // You might want to set an error state or show a user-friendly message
+      setsubmitComment(false);
     }
-    
-    const pageTitle = "Add Book";
+  };
 
-    return (
-      <>
-        <div className="container">
-            <Header pageTitle={pageTitle} />
+  const pageTitle = "Request a Review";
 
-            <form className="add-form">
-                <div className="form-control">
-                    <label>Title *</label>
-                    <input type="text" name="title" placeholder="Add Book Title" />
-                </div>
-                <div className="form-control">
-                    <label>Book Cover *</label>
-                    <input type="text" name="cover" placeholder="Add Cover" />
-                </div>
+  return (
+    <>
+      <Header />
+      <div className="container">
+        <h2 className="page-title">{pageTitle}</h2>
 
-                <div className="form-control">
-                <label>Author *</label>
-                <input
-                    type="text" name="author" placeholder="Add Author" />
-                </div>
+        <form onSubmit={handleAddBook} className="add-form">
+          <div className="form-control">
+            <label>Title *</label>
+            <input
+              type="text"
+              name="title"
+              className="input-class"
+              placeholder="Book Title"
+            />
+          </div>
+          <div className="form-control">
+            <label>Author *</label>
+            <input
+              type="text"
+              name="author"
+              className="input-class"
+              placeholder="Book Author"
+            />
+          </div>
 
-                <div className="form-control">
-                <label>Synopsis</label>
-                <textarea
-                    type="text" name="synopsis" placeholder="Add a synopsis..." />
-                </div>
-                
-                <button onClick={(e)=> handleAddBook(e)} className="btn btn-block">Save Book</button>
-            </form>
+          <div className="form-control">
+            <label>Synopsis</label>
+            <textarea
+              type="text"
+              name="synopsis"
+              placeholder="any info about the book..."
+            />
+          </div>
 
-        </div>
+          <button type="submit" className="btn btn-block">
+            {issubmitComment ? (
+              <div className="css-spinners">
+                <Ellipsis size={30} />
+              </div>
+            ) : (
+              "Request review"
+            )}
+          </button>
+        </form>
+      </div>
+    </>
+  );
+}
 
-        
-      </>
-    )
-  }
-  
-  export default AddBookPage
-  
+export default AddBookPage;

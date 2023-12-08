@@ -1,83 +1,141 @@
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectNotes,
+  addComment,
+  returnFromDb,
+  eraseNote,
+} from "../store/notesSlice.js";
+import { db } from "../firebase/config.js";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  deleteDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { Circle, Ellipsis } from "react-css-spinners";
 
-import {useSelector, useDispatch} from 'react-redux';
-import {selectNotes, eraseNote, addNote} from '../store/notesSlice.js';
+function Notes({ bookId }) {
+  const [issubmitComment, setsubmitComment] = useState(false);
+  const [isCommentLoading, setisCommentLoading] = useState(true);
 
-function Notes({bookId}) {
-    
-    const dispatch = useDispatch();
-    
-    function handleEraseNote(id) {
-      if(confirm('Are you sure you want to erase this note?')) {
-        dispatch(eraseNote(id));
-      }
+  useEffect(() => {
+    const populateCommentSlice = async () => {
+      const querySnapshot = await getDocs(collection(db, "Comments"));
+      const database = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      dispatch2(returnFromDb(database));
+      setisCommentLoading(false);
+    };
+    populateCommentSlice();
+  }, []);
+
+  const dispatch2 = useDispatch();
+  const comments = useSelector(selectNotes).filter(
+    (comment) => comment.book_id == bookId
+  );
+
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+
+    const newComment = {
+      book_id: bookId,
+      time: serverTimestamp(),
+      name: document.querySelector("input[name=name]").value,
+      text: document.querySelector("textarea[name=comment]").value,
+    };
+    if (newComment.name && newComment.text) {
+      setsubmitComment(true);
+      const docRef = await addDoc(collection(db, "Comments"), newComment);
+      dispatch2(addComment(newComment));
+      setsubmitComment(false);
+
+      // dispatch(addComment(newNote));
+      // document.querySelector("input[name=comment]").value = "";
+      // document.querySelector("textarea[name=name]").value = "";
+    } else {
+      alert("Please fill the mandatory fields.");
     }
+  };
+  
+  console.log("submit", issubmitComment);
 
-    function handleAddNote(e) {
-      e.preventDefault();
+  const handleEraseNote = async (id) => {
+    confirm("sure to delete!")
+    await deleteDoc(doc(db, "Comments", id));
+    dispatch2(eraseNote(id));
+  };
 
-      const newNote = {
-        book_id: bookId,
-        title: document.querySelector('input[name=title]').value,
-        text: document.querySelector('textarea[name=note]').value
-      }
-      if (newNote.title && newNote.text) {
-          dispatch(addNote(newNote));
-          document.querySelector('input[name=title]').value = "";
-          document.querySelector('textarea[name=note]').value = "";
-      } else {
-          alert('Please fill the mandatory fields.');
-      }
+  return (
+    <>
+      <div className="notes-wrapper">
+        <h2>Rewiew Comments</h2>
 
-  }
-
-    const notes = useSelector(selectNotes).filter(note => note.book_id == bookId);
-    
-    return (
-      <>
-
-        <div className="notes-wrapper">
-
-            <h2>Reader's Notes</h2>
-
-            {notes.length ?
-
-              <div className="notes">
-              {notes.map(note => 
-                  <div key={note.id} className="note">
-                      <div onClick={()=>handleEraseNote(note.id)} className="erase-note">Erase note</div>
-                      <h3>{note.title}</h3>
-                      <p>{note.text}</p>
-                  </div>
-                  )}
+        {isCommentLoading ? (
+          <div>
+            <div className="css-spinners">
+              <Ellipsis color="#0d1f41" size={30} />
+            </div>
+          </div>
+        ) : (
+          <div className="notes">
+            {comments.length === 0 && (
+              <p className="not-found">No comment yet</p>
+            )}
+            {comments.map((comment) => (
+              <div key={comment.id} className="note">
+                <div
+                  onClick={() => handleEraseNote(comment.id)}
+                  className="erase-note"
+                >
+                  Erase note
+                </div>
+                <h3>{comment.name}</h3>
+                <p>{comment.text}</p>
               </div>
+            ))}
+          </div>
+        )}
 
-              :
+        <details>
+          <summary>Write a comment</summary>
+          <form className="add-note">
+            <div className="form-control">
+              <label>Name</label>
+              <input
+                type="text"
+                name="name"
+                className="input-class"
+                placeholder="full name"
+              />
+            </div>
+            <div className="form-control">
+              <label>comment *</label>
+              <textarea
+                type="text"
+                name="comment"
+                placeholder="your comment..."
+              />
+            </div>
 
-              <p>This books doesn't have notes yet. Use the form below to add a note.</p>
-            }
-            
+            <button
+              onClick={(e) => {
+                handleAddComment(e);
+              }}
+              disabled={issubmitComment}
+              className="btn btn-block"
+            >
+              {issubmitComment ? <Ellipsis size={30} /> : "comment"}
+            </button>
+          </form>
+        </details>
+      </div>
+    </>
+  );
+}
 
-            <details>
-                <summary>Add a note</summary>
-                <form className="add-note">
-                    <div className="form-control">
-                        <label>Title *</label>
-                        <input type="text" name="title" placeholder="Add a note title" />
-                    </div>
-                    <div className="form-control">
-                        <label>Note *</label>
-                        <textarea type="text" name="note" placeholder="Add note" />
-                    </div>
-                    
-                    <button onClick={(e)=>{handleAddNote(e)}}className="btn btn-block">Add Note</button>
-                </form>
-            </details>
-
-        </div>
-
-      </>
-    )
-  }
-  
-  export default Notes
-  
+export default Notes;
