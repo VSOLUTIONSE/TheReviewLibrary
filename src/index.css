@@ -137,12 +137,12 @@ textarea {
   appearance: none;
   min-width: 100px;
   width: 100%;
-  border-radius: 25px;
+  border-radius: 20px;
   margin: 20px 0 0;
 }
 
 textarea {
-  height: 200px;
+  height: 100px;
   padding-top: 10px;
   outline: 1px;
 }
@@ -467,16 +467,27 @@ table tr th {
 .single-book {
   display: flex;
   padding: 4% auto;
+  flex-direction: column;
 }
 
+.img-para{
+  display: flex;
+  gap: 4rem;
+  margin-bottom: 2rem;
+
+}
 .single-book .book-cover {
-  max-width: 360px;
+  max-width: 30%;
+  min-width: 20%;
   margin: 5% auto;
 }
 
 .single-book .book-details {
   padding-left: 20px;
   margin: 5% auto;
+  max-width: 60%;
+
+
 }
 
 .single-book .book-details h3 {
@@ -490,8 +501,10 @@ table tr th {
 
 .single-book .book-details p {
   margin-bottom: 20px;
-  max-width: 400px;
+  max-width: 100%;
   text-align: left;
+
+
 }
 
 .single-book .book-details .read-checkbox {
@@ -563,6 +576,19 @@ table tr th {
   border-radius: 4px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
   position: relative;
+}
+
+.note-cont{
+  max-width: 90%;
+  display: flex;
+  background: #978a8a;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1px;
+
+
+
+
 }
 
 .notes .note .erase-note {

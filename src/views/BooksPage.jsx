@@ -28,16 +28,15 @@ function BooksPage() {
   const [bookIsLoading, setBookIsLoading] = useState(true);
   const [isloadMore, setIsLoadMore] = useState(false);
 
-
   const pageTitle = "📖 Explore Our Miraids of Inspirition";
 
   useEffect(() => {
     const populateBookSlice = async () => {
+      if (data.length > 0) {
+        setBookIsLoading(false);
+        return () => {};
+      }
       try {
-        if (data.length > 0) {
-          setBookIsLoading(false);
-          return () => {};
-        }
         const booksRef = collection(db, "Books");
         const queryData = query(booksRef, orderBy("title", "desc"), limit(3));
 
@@ -54,11 +53,11 @@ function BooksPage() {
         console.error("Error fetching data:", error);
         // You might want to set an error state or show a user-friendly message
         setBookIsLoading(false);
-        setshowCatchError(true)
+        setshowCatchError(true);
       }
     };
     populateBookSlice();
-  }, []);
+  }, [data]);
 
   // get the next set of books
   let lastVisible;
@@ -81,7 +80,7 @@ function BooksPage() {
 
       if (querySnapshot.empty) {
         console.log("no more");
-      setIsLoadMore(false);
+        setIsLoadMore(false);
         // display nice toast
         return;
       }
@@ -96,9 +95,8 @@ function BooksPage() {
     } catch (error) {
       // Handle errors here
       console.error("Error fetching data:", error);
-      setIsLoadMore(true);
-      setshowCatchError(true)
-
+      setIsLoadMore(false);
+      setshowCatchError(true);
 
       // You might want to set an error state or show a user-friendly message
     }
@@ -119,7 +117,12 @@ function BooksPage() {
   return (
     <>
       <Header />
-      {<ErrorBackDrop setshowCatchError= {setshowCatchError} showCatchError={showCatchError}/>}
+      {
+        <ErrorBackDrop
+          setshowCatchError={setshowCatchError}
+          showCatchError={showCatchError}
+        />
+      }
       <div className="container">
         <Categories setBookIsLoading={setBookIsLoading} />
         <Divider flexItem orientation="horizontal" sx={{ px: 5 }} />
@@ -153,7 +156,6 @@ function BooksPage() {
         </div>
         {!isloadMore && (
           <p onClick={getNextBookSlice} className="more">
-           
             <ReplayIcon /> <span>more books</span>
           </p>
         )}

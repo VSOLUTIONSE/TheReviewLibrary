@@ -21,7 +21,17 @@ function Notes({ bookId }) {
   const [issubmitComment, setsubmitComment] = useState(false);
   const [isCommentLoading, setisCommentLoading] = useState(true);
 
+
+  const dispatch2 = useDispatch();
+  const comments = useSelector(selectNotes).filter(
+    (comment) => comment.book_id == bookId
+  );
   useEffect(() => {
+    if (comments.length > 0) {
+      setisCommentLoading(false);
+      
+      return () => {};
+    }
     const populateCommentSlice = async () => {
       const querySnapshot = await getDocs(collection(db, "Comments"));
       const database = querySnapshot.docs.map((doc) => ({
@@ -34,10 +44,7 @@ function Notes({ bookId }) {
     populateCommentSlice();
   }, []);
 
-  const dispatch2 = useDispatch();
-  const comments = useSelector(selectNotes).filter(
-    (comment) => comment.book_id == bookId
-  );
+  
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -61,11 +68,11 @@ function Notes({ bookId }) {
       alert("Please fill the mandatory fields.");
     }
   };
-  
+
   console.log("submit", issubmitComment);
 
   const handleEraseNote = async (id) => {
-    confirm("sure to delete!")
+    confirm("sure to delete!");
     await deleteDoc(doc(db, "Comments", id));
     dispatch2(eraseNote(id));
   };
@@ -87,16 +94,18 @@ function Notes({ bookId }) {
               <p className="not-found">No comment yet</p>
             )}
             {comments.map((comment) => (
-              <div key={comment.id} className="note">
-                <div
-                  onClick={() => handleEraseNote(comment.id)}
-                  className="erase-note"
-                >
-                  Erase note
+              <section className="note-cont">
+                <div key={comment.id} className="note">
+                  <div
+                    onClick={() => handleEraseNote(comment.id)}
+                    className="erase-note"
+                  >
+                    Erase note
+                  </div>
+                  <h3>{comment.name}</h3>
+                  <p>{comment.text}</p>
                 </div>
-                <h3>{comment.name}</h3>
-                <p>{comment.text}</p>
-              </div>
+              </section>
             ))}
           </div>
         )}

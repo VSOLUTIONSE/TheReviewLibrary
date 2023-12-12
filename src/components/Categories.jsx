@@ -13,7 +13,7 @@ import { selectBooks } from "../store/booksSlice.js";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config.js";
 
-const Categories = ({ setBookIsLoading, setshowCatchError,  }) => {
+const Categories = ({ setBookIsLoading, setshowCatchError }) => {
   //   const [category, setCategory] = useState("");
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
@@ -30,18 +30,24 @@ const Categories = ({ setBookIsLoading, setshowCatchError,  }) => {
   const dispatch2 = useDispatch();
 
   const handleCategories = async (e, itermIndex) => {
-    setIndex(itermIndex);
-    setBookIsLoading(true);
-    const selectedValue = e.target.value;
-    const querySnapshot = await getDocs(collection(db, "Books"));
-    const database = querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    dispatch2(selectedCategory([selectedValue, database]));
+    try {
+      setIndex(itermIndex);
+      setBookIsLoading(true);
+      const selectedValue = e.target.value;
+      const querySnapshot = await getDocs(collection(db, "Books"));
+      const database = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      dispatch2(selectedCategory([selectedValue, database]));
 
-    setBookIsLoading(false);
-    if (database.length > 0) setBookIsLoading(false);
+      setBookIsLoading(false);
+      if (database.length > 0) setBookIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setIsLoadMore(false);
+      setshowCatchError(true);
+    }
   };
 
   const handleSearchTerm = (e) => {
@@ -71,7 +77,7 @@ const Categories = ({ setBookIsLoading, setshowCatchError,  }) => {
       console.error("Error fetching data:", error);
       // You might want to set an error state or show a user-friendly message
       setBookIsLoading(false);
-      setshowCatchError(true)
+      setshowCatchError(true);
     }
   };
 
