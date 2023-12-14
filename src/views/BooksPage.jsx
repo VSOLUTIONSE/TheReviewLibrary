@@ -147,7 +147,9 @@ function BooksPage() {
         </div>
       </div>
       <div className="bottom-loader">
-        {!data.length === 0 && (
+        {data.length === 0 ? (
+          ""
+        ) : (
           <>
             <div>
               <svg className="arrows">

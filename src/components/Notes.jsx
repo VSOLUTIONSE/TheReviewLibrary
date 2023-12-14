@@ -57,7 +57,12 @@ function Notes({ bookId }) {
     };
     if (newComment.name && newComment.text) {
       setsubmitComment(true);
-      const docRef = await addDoc(collection(db, "Comments"), newComment);
+      const docRef = await addDoc(collection(db, "Comments"), {
+        book_id: bookId,
+        // time: serverTimestamp(),
+        name: document.querySelector("input[name=name]").value,
+        text: document.querySelector("textarea[name=comment]").value,
+      });
       dispatch2(addComment(newComment));
       setsubmitComment(false);
 
