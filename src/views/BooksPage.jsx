@@ -57,7 +57,7 @@ function BooksPage() {
       }
     };
     populateBookSlice();
-  }, [data]);
+  }, []);
 
   // get the next set of books
   let lastVisible;
@@ -147,21 +147,25 @@ function BooksPage() {
         </div>
       </div>
       <div className="bottom-loader">
-        <div>
-          <svg className="arrows">
-            <path class="a1" d="M0 0 L30 32 L60 0"></path>
-            <path class="a2" d="M0 20 L30 52 L60 20"></path>
-            <path class="a3" d="M0 40 L30 72 L60 40"></path>
-          </svg>
-        </div>
-        {!isloadMore && (
-          <p onClick={getNextBookSlice} className="more">
-            <ReplayIcon /> <span>more books</span>
-          </p>
+        {!data.length === 0 && (
+          <>
+            <div>
+              <svg className="arrows">
+                <path class="a1" d="M0 0 L30 32 L60 0"></path>
+                <path class="a2" d="M0 20 L30 52 L60 20"></path>
+                <path class="a3" d="M0 40 L30 72 L60 40"></path>
+              </svg>
+            </div>
+            {!isloadMore && (
+              <p onClick={getNextBookSlice} className="more">
+                <ReplayIcon /> <span>more books</span>
+              </p>
+            )}
+            <div className="css-spinners more">
+              {isloadMore && <Ellipsis size={40} color="#f9ad6a" />}
+            </div>
+          </>
         )}
-        <div className="css-spinners more">
-          {isloadMore && <Ellipsis size={40} color="#f9ad6a" />}
-        </div>
       </div>
     </>
   );

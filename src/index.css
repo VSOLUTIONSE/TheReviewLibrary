@@ -762,6 +762,18 @@ table tr th {
   min-width: 40;
 }
 
+@media (max-width: 1230px){
+
+  .category-search{
+    flex-direction: column-reverse;
+    gap: 2rem;
+  }
+
+  .search-field{
+    margin-left: 70%;
+  }
+}
+
 @media (max-width: 768px) {
   .btns {
     display: flex;

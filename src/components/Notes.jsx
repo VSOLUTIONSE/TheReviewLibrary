@@ -51,7 +51,7 @@ function Notes({ bookId }) {
 
     const newComment = {
       book_id: bookId,
-      time: serverTimestamp(),
+      // time: serverTimestamp(),
       name: document.querySelector("input[name=name]").value,
       text: document.querySelector("textarea[name=comment]").value,
     };
