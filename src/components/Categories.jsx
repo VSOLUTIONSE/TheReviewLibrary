@@ -12,6 +12,8 @@ import { StyledEngineProvider } from "@mui/material/styles";
 import { selectBooks } from "../store/booksSlice.js";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config.js";
+import { motion } from "framer-motion";
+import { fadeIn } from "../variants.js";
 
 const Categories = ({ setBookIsLoading, setshowCatchError }) => {
   //   const [category, setCategory] = useState("");
@@ -84,7 +86,15 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
   return (
     <>
       <StyledEngineProvider injectFirst>
-        <section className="category-search">
+        <motion.section
+          className="category-search"
+          variants={fadeIn("down", 0.3)}
+          initial="hidden"
+          animate="show"
+          exit="hidden"
+          transition={{ duration: 0.6, ease: "easeIn" }}
+
+        >
           <div className="category-btn">
             <h2 className="category-h2">Category</h2>
             <div className="btns">
@@ -140,7 +150,7 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
               </IconButton>
             </Paper>
           </div>
-        </section>
+        </motion.section>
       </StyledEngineProvider>
     </>
   );

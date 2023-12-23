@@ -18,10 +18,28 @@ export const notesSlice = createSlice({
     eraseNote: (notes, action) => {
       return notes.filter((note) => note.id != action.payload);
     },
+    liked: (notes, action) => {
+      let noteWithId = notes.find((note) => note.id === action.payload);
+//       let Bolean = noteWithId.isLiked;
+// console.log(Bolean)
+//       noteWithId.isLiked = !Bolean;
+      noteWithId.likes = noteWithId.likes + 1;
+    },
+    unLiked: (notes, action) => {
+      let noteWithId = notes.find((note) => note.id === action.payload);
+
+      // let Bolean = noteWithId.isLiked;
+
+      // noteWithId.isLiked = !Bolean;
+
+      noteWithId.likes = noteWithId.likes - 1;
+    },
+    
   },
 });
 
-export const { addComment, returnFromDb, eraseNote } = notesSlice.actions;
+export const { addComment, returnFromDb, eraseNote, unLiked, liked } =
+  notesSlice.actions;
 
 export const selectNotes = (state) => state.notes;
 

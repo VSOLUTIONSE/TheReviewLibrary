@@ -71,7 +71,7 @@ function SingleBookPage() {
                   nobis, repellat beatae voluptas rem fugiat et alias ex, amet
                   velit tenetur ab quis eaque nisi in fugit! Nisi, repellat
                   eligendi. Lorem ipsum, dolor sit amet consectetur adipisicing
-                  elit. Atque natus corrupti animi voluptatibus ratione maxime
+                  elit. <br></br><br></br>Atque natus corrupti animi voluptatibus ratione maxime
                   dolorum cumque sunt vitae esse modi expedita nobis magni,
                   earum repellat quam dolorem sed quaerat corporis tempora neque
                   nemo. Quisquam ipsam, iste ipsa, iusto eos praesentium atque
@@ -83,7 +83,7 @@ function SingleBookPage() {
                 </p>
               </div>
             </div>
-
+            <Divider flexItem orientation="horizontal" sx={{my: "1rem"}}/>
             <Notes bookId={id} />
           </div>
         ) : (

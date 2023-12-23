@@ -43,7 +43,7 @@ body {
   border-radius: 50%;
   border: 6px solid #978a8a;
   border-color: #0d1f41#0d1f41 transparent transparent;
-  animation: lds-dual-ring .6s linear infinite;
+  animation: lds-dual-ring 0.6s linear infinite;
 }
 @keyframes lds-dual-ring {
   0% {
@@ -154,6 +154,17 @@ textarea:focus {
   margin-top: 40px;
 }
 
+.write-comment{
+  text-decoration: underline;
+  font-weight: 500;
+  color: #0d1f41;
+}
+@media (max-width: 768px){
+  .write-comment{
+    text-align: center;
+    font-weight: 400px;
+  }
+}
 .form-control {
   margin: 20px 0;
 }
@@ -470,24 +481,48 @@ table tr th {
   flex-direction: column;
 }
 
-.img-para{
+.img-para {
   display: flex;
   gap: 4rem;
   margin-bottom: 2rem;
+}
 
+.single-book .book-cover img {
+  width: 100%;
+  
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  
 }
 .single-book .book-cover {
-  max-width: 30%;
-  min-width: 20%;
+  max-width: 40%;
+  min-width: 30%;
   margin: 5% auto;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.144);
+  
+
 }
+
+@media( max-width: 900px){
+  
+.img-para {
+ flex-direction: column;
+ gap: 2rem;
+}
+.single-book .book-cover{
+  max-width: 60%;
+  min-width: 70%;
+  /* height: 90%; */
+
+}
+}
+
 
 .single-book .book-details {
   padding-left: 20px;
   margin: 5% auto;
   max-width: 60%;
-
-
 }
 
 .single-book .book-details h3 {
@@ -502,9 +537,7 @@ table tr th {
 .single-book .book-details p {
   margin-bottom: 20px;
   max-width: 100%;
-  text-align: left;
-
-
+  text-align: justify;
 }
 
 .single-book .book-details .read-checkbox {
@@ -528,14 +561,20 @@ table tr th {
   margin-top: 20px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .single-book {
     flex-direction: column;
   }
 
   .single-book .book-details {
-    padding-left: 0;
+    /* padding-left: 0; */
     margin-top: 20px;
+    max-width: 90%;
+  }
+  .single-book .book-details p{
+    width: 100%;
+    /* border: 2px red solid; */
+    text-align: justify;
   }
 
   .book .book-cover img {
@@ -555,6 +594,7 @@ table tr th {
 .notes-wrapper {
   padding-left: 40px;
   max-width: 600px;
+  margin-top: 2%;
 }
 
 .notes-wrapper h2 {
@@ -570,43 +610,126 @@ table tr th {
 }
 
 .notes .note {
-  background-color: #fff;
   margin-bottom: 12px;
   padding: 18px;
-  border-radius: 4px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
+  min-width: 80%;
+  width: 80%;
+  border: 0.5px solid #3e3e3e27;
+  border-radius: 10px;
   position: relative;
 }
 
-.note-cont{
-  max-width: 90%;
+.notes {
+  width: 80vw;
+  padding: 10%;
   display: flex;
-  background: #978a8a;
-  justify-content: center;
-  align-items: center;
-  border-radius: 1px;
+  background-color: #fff;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+  border-radius: 25px;
+  margin: 0 auto;
+}
 
-
-
-
+.note-cont {
+  display: flex;
+  margin-left: 2%;
+  gap: 10px;
+  /* justify-content: left; */
+  /* align-items: center; */
+  /* border: 2px solid red ; */
 }
 
 .notes .note .erase-note {
-  margin-bottom: 12px;
+  margin-left: 1%;
   position: absolute;
-  right: 8px;
-  top: 4px;
-  font-size: 14px;
-  text-decoration: underline;
-  color: red;
+   right: 8px;
+  /* top: 4px; */
+  /* color: red; */
+  cursor: pointer; 
+  
+}
+
+.engage{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  /* gap: 5px; */
+  margin-top: 4%;
   cursor: pointer;
-  display: none;
+  position: relative;
+  padding: 2%;
+
+
 }
 
-.notes .note:hover .erase-note {
+.icons{
+  position: absolute;
+  left: 2px;
+  bottom: 0.5%;
+}
+
+.likes{
+  position: absolute;
+  left: 6%;
+  /* bottom: 10%; */
+  /* border: 2px red solid; */
+}
+/* .notes .note:hover .erase-note {
   display: block;
-}
+} */
 
+@media (max-width: 1100px){
+  .likes{
+    position: absolute;
+    left: 15%;
+    /* bottom: 10%; */
+    /* border: 2px red solid; */
+  }
+
+  .engage{
+    margin-top: 4%;
+    padding: 3%;
+  }
+  .icons{
+    bottom: 1%;
+  }
+
+}
+@media (max-width: 768px){
+  .likes{
+    position: absolute;
+    left: 15%;
+    /* bottom: 10%; */
+    /* border: 2px red solid; */
+  }
+
+  .engage{
+    margin-top: 5%;
+    padding: 5%;
+  }
+  .icons{
+    bottom: 1%;
+  }
+
+}
+@media (max-width: 500px){
+  .likes{
+    position: absolute;
+    left: 15%;
+    /* bottom: 10%; */
+    /* border: 2px red solid; */
+  }
+
+  .engage{
+    margin-top: 7%;
+    padding: 7%;
+  }
+  .icons{
+    bottom: 1%;
+  }
+
+}
 .notes .note h3 {
   margin-bottom: 12px;
 }
@@ -762,14 +885,13 @@ table tr th {
   min-width: 40;
 }
 
-@media (max-width: 1230px){
-
-  .category-search{
+@media (max-width: 1230px) {
+  .category-search {
     flex-direction: column-reverse;
     gap: 2rem;
   }
 
-  .search-field{
+  .search-field {
     margin-left: 70%;
   }
 }

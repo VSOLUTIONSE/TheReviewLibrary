@@ -4,6 +4,8 @@ import { db } from "../firebase/config.js";
 import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
 import { Ellipsis, Ring } from "react-css-spinners";
+import { delay, easeOut, motion } from "framer-motion";
+import { fadeIn } from "../variants.js";
 
 function AddBookPage() {
   const [issubmitComment, setsubmitComment] = useState(false);
@@ -41,7 +43,12 @@ function AddBookPage() {
   return (
     <>
       <Header />
-      <div className="container">
+      <motion.div className="container"
+      variants={fadeIn("right", 0.2)}
+      initial="hidden"
+      animate="show"
+      exit="hidden"
+      transition={{delay: 0.5, ease: "easeOut"}}>
         <h2 className="page-title">{pageTitle}</h2>
 
         <form onSubmit={handleAddBook} className="add-form">
@@ -83,7 +90,7 @@ function AddBookPage() {
             )}
           </button>
         </form>
-      </div>
+      </motion.div>
     </>
   );
 }

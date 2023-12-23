@@ -1,6 +1,6 @@
 import FullPageLoader from "../components/FullPageLoader.jsx";
 import { useReducer, useState } from "react";
-import { auth } from "../firebase/config.js";
+import { auth, db } from "../firebase/config.js";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -12,8 +12,8 @@ import {
   LoginInitialState,
 } from "../reducers/loginReducer.js";
 import { StyledEngineProvider } from "@mui/material/styles";
-import { useDispatch } from "react-redux";
-import { setUsers } from "../store/usersSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setUsers, selectUsers } from "../store/usersSlice.js";
 import Logo from "../assets/img/logo.jpg";
 // import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -29,7 +29,7 @@ import { motion, useAnimationControls } from "framer-motion";
 import { fadeIn } from "../variants.js";
 import { Ellipsis } from "react-css-spinners";
 import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
+import { setDoc, doc, addDoc } from "firebase/firestore";
 
 function LoginPage() {
   // const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +39,7 @@ function LoginPage() {
   const [errorMessage, seterrorMessage] = useState("");
   const [state, dispatch] = useReducer(LoginSignUpReducer, LoginInitialState);
   const dispatch2 = useDispatch();
+  const [Userid, setUserid] = useState("fghjkjkbnmhjkl");
 
   const popControl = useAnimationControls();
 
@@ -52,10 +53,20 @@ function LoginPage() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const startRange = 1;
+  const endRange = 5;
 
-  onAuthStateChanged(auth, (user) => {
+  let dynamicRangeObject = {};
+
+  for (let i = startRange; i <= endRange; i++) {
+    dynamicRangeObject[i] = false;
+  }
+  console.log(dynamicRangeObject);
+
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       dispatch2(setUsers({ id: user.uid, email: user.email }));
+      setUserid(user.uid);
     } else {
       dispatch2(setUsers(null));
     }
@@ -68,15 +79,16 @@ function LoginPage() {
     setUserCredential({ ...userCredentials, [e.target.name]: e.target.value });
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+
     if (!userCredentials.email && !userCredentials.password) {
       alert("Kindly input your details first");
       return;
     }
     setError(false);
     dispatch({ type: "SIGNUP", payload: true });
-    createUserWithEmailAndPassword(
+    const credentials = await createUserWithEmailAndPassword(
       auth,
       userCredentials.email,
       userCredentials.password
@@ -116,6 +128,8 @@ function LoginPage() {
       }
       dispatch({ type: "SIGNUP", payload: false });
     });
+    const docRef = doc(db, "likers", credentials.user.uid);
+    await setDoc(docRef, dynamicRangeObject);
   };
 
   const handleLogin = (e) => {
