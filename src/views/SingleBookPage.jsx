@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { collection, getDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/config.js";
 import Notes from "../components/Notes.jsx";
@@ -25,9 +25,10 @@ function SingleBookPage() {
   const data = useSelector(selectbook);
 
   // const bookwithId = data.filter((book) => book.id == id)[0];
-
+const location = useLocation()
   useEffect(() => {
     const populateBookSlice = async () => {
+
       try {
         const docRef = doc(db, "Books", id);
         const docSnap = await getDoc(docRef);
@@ -43,7 +44,7 @@ function SingleBookPage() {
     };
 
     populateBookSlice();
-  }, []);
+  }, [location.pathname]);
 
   console.log(data);
 

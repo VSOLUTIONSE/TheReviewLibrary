@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
 import {
   selectNotes,
   addComment,
@@ -7,6 +8,13 @@ import {
   liked,
   unLiked,
 } from "../store/notesSlice.js";
+import {
+  populatePropertyNames,
+  populateUniqueUser,
+  selectUserData,
+  updateLike,
+  updateUnlike
+} from "../store/userDataSlice.js";
 import { db } from "../firebase/config.js";
 import {
   collection,
@@ -32,19 +40,21 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 function Notes({ bookId }) {
   const [issubmitComment, setsubmitComment] = useState(false);
   const [isCommentLoading, setisCommentLoading] = useState(true);
-  const [commentkeys, setCommentId] = useState(["1", "4"]);
-  const [UniqueUser, setUniqueUser] = useState(true);
   const userData = useSelector(selectUsers);
   const userId = userData.currentUser.id;
-  // console.log(likersData)
 
   const dispatch2 = useDispatch();
   const comments = useSelector(selectNotes).filter(
     (comment) => comment.book_id == bookId
   );
+  const userState = useSelector(selectUserData);
+  const commentKeysId = userState.propertyNames;
 
+  const uniqueUser = userState.uniqueUser;
   const allComments = useSelector(selectNotes);
   // const likersData = useSelector(selectLikes);
+  console.log(allComments);
+  const location = useLocation();
 
   useEffect(() => {
     if (comments.length > 0) {
@@ -58,6 +68,7 @@ function Notes({ bookId }) {
         id: doc.id,
         ...doc.data(),
       }));
+      // console.log(database);
       dispatch2(returnFromDb(database));
       setisCommentLoading(false);
     };
@@ -68,23 +79,27 @@ function Notes({ bookId }) {
         ...doc.data(),
       }));
 
-      console.log(database);
+      // console.log(database);
       dispatch2(returnLikesFromDb(database));
       const Uniqueuser = database.find(
         (eachUserdata) => eachUserdata.id === userId
       );
+      if (Uniqueuser) {
+        dispatch2(populateUniqueUser(Uniqueuser));
+      }
       const propertyNames = Object.keys(Uniqueuser);
       console.log(Uniqueuser);
-      setUniqueUser(Uniqueuser);
-      console.log(propertyNames);
-      setCommentId(propertyNames);
+      if (propertyNames) {
+        dispatch2(populatePropertyNames(propertyNames));
+      }
+
+      // console.log(propertyNames);
     };
     populateLikesSlice();
     populateCommentSlice();
-  }, []);
+  }, [location.pathname]);
 
-  console.log(UniqueUser);
-
+  console.log(uniqueUser);
   const handleAddComment = async (e) => {
     e.preventDefault();
 
@@ -99,7 +114,7 @@ function Notes({ bookId }) {
       time: serverTimestamp(),
       name: document.querySelector("input[name=name]").value,
       text: document.querySelector("textarea[name=comment]").value,
-      likes: 0
+      likes: 0,
     };
     if (newComment.name && newComment.text) {
       setsubmitComment(true);
@@ -108,8 +123,8 @@ function Notes({ bookId }) {
         // time: serverTimestamp(),
         name: document.querySelector("input[name=name]").value,
         text: document.querySelector("textarea[name=comment]").value,
-        likes: 0
-      }
+        likes: 0,
+      };
       await setDoc(doc(db, "Comments", newId), data);
       dispatch2(addComment(newComment));
       setsubmitComment(false);
@@ -130,16 +145,23 @@ function Notes({ bookId }) {
     dispatch2(eraseNote(id));
   };
   const handleLike = async (id) => {
-    console.log(UniqueUser);
+    console.log(uniqueUser);
+
+    if (uniqueUser) {
+      dispatch2(updateLike(id));
+    }
+
+    if (uniqueUser) {
+      dispatch2(liked(id));
+    }
 
     // if (!UniqueUser[id])  {
     //   const docRef = doc(db, "likers", userId);
     //   await setDoc(docRef, { [id]: true }, { merge: true });
     // }
-
-    if (UniqueUser) {
+    if (uniqueUser) {
       const docRef = doc(db, "likers", userId);
-      await updateDoc(docRef, { [id]: !UniqueUser[id] });
+      await updateDoc(docRef, { [id]: !uniqueUser[id] });
     }
 
     // if (user.uid){
@@ -150,10 +172,16 @@ function Notes({ bookId }) {
     await updateDoc(commentWithId, {
       likes: increment(1),
     });
-    dispatch2(liked(id));
   };
   const handleUnlike = async (id) => {
-    if (UniqueUser) {
+    if (uniqueUser) {
+      dispatch2(updateUnlike(id));
+    }
+    if (uniqueUser) {
+      dispatch2(unLiked(id));
+    }
+
+    if (uniqueUser) {
       const docRef = doc(db, "likers", userId);
       await updateDoc(docRef, { [id]: false });
     }
@@ -165,7 +193,6 @@ function Notes({ bookId }) {
     await updateDoc(commentWithId, {
       likes: commentId.likes - 1,
     });
-    dispatch2(unLiked(id));
   };
 
   // console.log(commentkeys)
@@ -194,10 +221,10 @@ function Notes({ bookId }) {
                   <h3>{comment.name}</h3>
                   <p>{comment.text}</p>
                   <div className="engage">
-                    {commentkeys.map((commentKey) => (
+                    {commentKeysId.map((commentKey) => (
                       <div key={commentKey} style={{}}>
                         {commentKey === comment.id &&
-                          UniqueUser[comment.id] === true && (
+                          uniqueUser[comment.id] === true && (
                             <div
                               className="icons"
                               onClick={() => handleUnlike(comment.id)}
@@ -206,7 +233,7 @@ function Notes({ bookId }) {
                             </div>
                           )}
                         {commentKey === comment.id &&
-                          UniqueUser[comment.id] !== true && (
+                          !uniqueUser[comment.id] && (
                             <div
                               className="icons"
                               onClick={() => handleLike(comment.id)}
@@ -247,7 +274,7 @@ function Notes({ bookId }) {
               <textarea
                 type="text"
                 name="comment"
-                max=""
+                maxLength={200}
                 placeholder="your comment..."
               />
             </div>
