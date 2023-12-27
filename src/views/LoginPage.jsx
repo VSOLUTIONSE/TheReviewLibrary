@@ -1,6 +1,7 @@
 import FullPageLoader from "../components/FullPageLoader.jsx";
-import { useReducer, useState } from "react";
+import { useReducer, useState, useEffect } from "react";
 import { auth, db } from "../firebase/config.js";
+import { getDocs,doc,collection ,setDoc,} from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -12,6 +13,7 @@ import {
   LoginInitialState,
 } from "../reducers/loginReducer.js";
 import { StyledEngineProvider } from "@mui/material/styles";
+import { selectNotes } from "../store/notesSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers, selectUsers } from "../store/usersSlice.js";
 import Logo from "../assets/img/logo.jpg";
@@ -29,7 +31,7 @@ import { motion, useAnimationControls } from "framer-motion";
 import { fadeIn } from "../variants.js";
 import { Ellipsis } from "react-css-spinners";
 import Alert from "@mui/material/Alert";
-import { setDoc, doc, addDoc } from "firebase/firestore";
+
 
 function LoginPage() {
   // const [isLoading, setIsLoading] = useState(false);
@@ -39,9 +41,31 @@ function LoginPage() {
   const [errorMessage, seterrorMessage] = useState("");
   const [state, dispatch] = useReducer(LoginSignUpReducer, LoginInitialState);
   const dispatch2 = useDispatch();
-  const [Userid, setUserid] = useState("fghjkjkbnmhjkl");
+ 
 
   const popControl = useAnimationControls();
+
+  let newId = Math.max(...useSelector(selectNotes).map((note) => note.id));
+
+  useEffect(() => {
+    // if (comments.length > 0) {
+    //   setisCommentLoading(false);
+    //   return () => {};
+    // }
+
+    const populateCommentSlice = async () => {
+      const querySnapshot = await getDocs(collection(db, "Comments"));
+      const database = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      // console.log(database);
+      dispatch2(returnFromDb(database));
+    };
+    populateCommentSlice();
+
+}, [])
+
 
   // mui
 
@@ -54,7 +78,7 @@ function LoginPage() {
     event.preventDefault();
   };
   const startRange = 1;
-  const endRange = 5;
+  const endRange = newId;
 
   let dynamicRangeObject = {};
 

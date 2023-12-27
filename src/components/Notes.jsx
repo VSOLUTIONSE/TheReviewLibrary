@@ -13,7 +13,8 @@ import {
   populateUniqueUser,
   selectUserData,
   updateLike,
-  updateUnlike
+  updateUnlike,
+  addNewCommentId,
 } from "../store/userDataSlice.js";
 import { db } from "../firebase/config.js";
 import {
@@ -47,13 +48,15 @@ function Notes({ bookId }) {
   const comments = useSelector(selectNotes).filter(
     (comment) => comment.book_id == bookId
   );
+  const allComments = useSelector(selectNotes);
   const userState = useSelector(selectUserData);
   const commentKeysId = userState.propertyNames;
+  // console.log(allComments)
 
   const uniqueUser = userState.uniqueUser;
-  const allComments = useSelector(selectNotes);
+  let newId = Math.max(...useSelector(selectNotes).map((note) => note.id)) + 1;
   // const likersData = useSelector(selectLikes);
-  console.log(allComments);
+  console.log(newId);
   const location = useLocation();
 
   useEffect(() => {
@@ -88,7 +91,7 @@ function Notes({ bookId }) {
         dispatch2(populateUniqueUser(Uniqueuser));
       }
       const propertyNames = Object.keys(Uniqueuser);
-      console.log(Uniqueuser);
+      // console.log(Uniqueuser);
       if (propertyNames) {
         dispatch2(populatePropertyNames(propertyNames));
       }
@@ -100,18 +103,27 @@ function Notes({ bookId }) {
   }, [location.pathname]);
 
   console.log(uniqueUser);
+  console.log(commentKeysId);
+
   const handleAddComment = async (e) => {
     e.preventDefault();
 
-    const newId = allComments.length
-      ? Math.max(...allComments.map((note) => note.id)) + 1
-      : 1;
+    const sameExit = allComments.find((comment) => comment.id === newId);
 
+    console.log(sameExit);
+    if (sameExit) {
+      newId = newId + 1;
+      dispatch2(addNewCommentId(newId));
+    } else {
+      dispatch2(addNewCommentId(newId));
+    }
+
+    console.log(userState);
     console.log(newId);
     const newComment = {
       id: newId,
       book_id: bookId,
-      time: serverTimestamp(),
+      // time: serverTimestamp(),
       name: document.querySelector("input[name=name]").value,
       text: document.querySelector("textarea[name=comment]").value,
       likes: 0,
@@ -120,13 +132,20 @@ function Notes({ bookId }) {
       setsubmitComment(true);
       const data = {
         book_id: bookId,
-        // time: serverTimestamp(),
         name: document.querySelector("input[name=name]").value,
         text: document.querySelector("textarea[name=comment]").value,
         likes: 0,
+        userId: userId,
       };
-      await setDoc(doc(db, "Comments", newId), data);
+
+      const newStringId = String(newId);
+      await setDoc(doc(db, "Comments", newStringId), data);
       dispatch2(addComment(newComment));
+
+      if (uniqueUser) {
+        const docRef = doc(db, "likers", userId);
+        await setDoc(docRef, { [newId]: false }, { merge: true });
+      }
       setsubmitComment(false);
 
       // dispatch(addComment(newNote));
@@ -137,13 +156,15 @@ function Notes({ bookId }) {
     }
   };
 
-  // console.log("submit", issubmitComment);
-
+  // Delete comment
   const handleEraseNote = async (id) => {
     confirm("sure to delete!");
-    await deleteDoc(doc(db, "Comments", id));
+    const newStringId = String(id);
+    await deleteDoc(doc(db, "Comments", newStringId));
     dispatch2(eraseNote(id));
   };
+
+  // Like comment
   const handleLike = async (id) => {
     console.log(uniqueUser);
 
@@ -173,6 +194,8 @@ function Notes({ bookId }) {
       likes: increment(1),
     });
   };
+
+  // Unlike comment
   const handleUnlike = async (id) => {
     if (uniqueUser) {
       dispatch2(updateUnlike(id));
@@ -210,7 +233,7 @@ function Notes({ bookId }) {
         ) : (
           <div className="notes">
             {comments.length === 0 && (
-              <p className="not-found">No comment yet</p>
+              <p className="not-found">Be the First to comment!</p>
             )}
             {comments?.map((comment) => (
               <section key={comment.id} className="note-cont">
@@ -248,7 +271,7 @@ function Notes({ bookId }) {
                       onClick={() => handleEraseNote(comment.id)}
                       className="erase-note"
                     >
-                      <DeleteIcon />
+                      {comment.userId === userId && <DeleteIcon />}
                     </div>
                   </div>
                 </div>
@@ -283,7 +306,7 @@ function Notes({ bookId }) {
               onClick={(e) => {
                 handleAddComment(e);
               }}
-              disabled={issubmitComment}
+              // disabled={issubmitComment}
               className="btn btn-block"
             >
               {issubmitComment ? <Ellipsis size={30} /> : "comment"}

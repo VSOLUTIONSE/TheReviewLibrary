@@ -21,10 +21,17 @@ export const userDataSlice = createSlice({
         updateUnlike: (userData, action)=>{
          const user=   userData.uniqueUser;
          user[action.payload] = false;
+        },
+        addNewCommentId: (userData, action)=>{
+            const properties =   userData.propertyNames;
+            properties.push(action.payload)
+            const user =   userData.uniqueUser;
+            user[action.payload] = false;
         }
+       
     }
 }) 
 
-export const { populatePropertyNames,populateUniqueUser, updateLike, updateUnlike} = userDataSlice.actions;
+export const { populatePropertyNames,populateUniqueUser, updateLike, updateUnlike, addNewCommentId} = userDataSlice.actions;
 export const selectUserData = (state) => state.userData
 export default userDataSlice.reducer;

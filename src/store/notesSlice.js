@@ -6,10 +6,10 @@ export const notesSlice = createSlice({
   reducers: {
     addComment: (notes, action) => {
       let newNote = action.payload;
-      newNote.id = notes.length
-        ? Math.max(...notes.map((note) => note.id)) + 1
-        : 1;
-      notes.push(newNote);
+      // newNote.id = notes.length
+      //   ? Math.max(...notes.map((note) => note.id)) + 1
+      //   : 1;
+      notes.unshift(newNote);
     },
     returnFromDb: (notes, action) => {
       // console.log(action.payload)
