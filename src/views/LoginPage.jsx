@@ -20,6 +20,7 @@ import Logo from "../assets/img/logo.jpg";
 // import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { TextField } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
@@ -31,6 +32,7 @@ import { motion, useAnimationControls } from "framer-motion";
 import { fadeIn } from "../variants.js";
 import { Ellipsis } from "react-css-spinners";
 import Alert from "@mui/material/Alert";
+import { useTheme,useMediaQuery } from "@mui/material";
 
 
 function LoginPage() {
@@ -68,6 +70,16 @@ function LoginPage() {
 
 
   // mui
+  const theme = useTheme();
+  const desktop = useMediaQuery(theme.breakpoints.up("lg"));
+  const tablet = useMediaQuery(theme.breakpoints.up("sm"));
+  const mobile = useMediaQuery(theme.breakpoints.up("xs"));
+
+  const sizes = () => {
+    if (desktop) return "large";
+    if (tablet) return "medium";
+    if (mobile) return "small";
+  };
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -239,7 +251,7 @@ function LoginPage() {
               <h1>
                 Welcome to{" "}
                 <span style={{ color: "#0d1f41" }}>
-                  Hidden Treasure Review App
+                  Hidden Treasure Review Library
                 </span>
               </h1>
               <p>Login or create an account to explore our book collection</p>
@@ -276,30 +288,23 @@ function LoginPage() {
                     minWidth: "100px",
                   }}
                 >
-                  <InputLabel htmlFor="outlined-adornment-password">
-                    Email
-                  </InputLabel>
-                  <OutlinedInput
+                  <TextField
                     id="outlined-basdic"
                     type="email"
                     name="email"
                     onChange={handleUser}
                     variant="outlined"
                     label="Email"
+                    size={sizes()}
                     sx={{
-                      color: "#fff",
                       backgroundColor: "transparent",
-                      "&.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: "#4b4a4a",
-                        },
-                      "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                        {
-                          border: "0.4px solid #4b4a4a",
-                        },
-                      "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        {
-                          border: "1.5px solid #4b4a4a;",
+                        "& .MuiOutlinedInput-root": {
+                          color: "#fff",
+                          "&.Mui-focused fieldset": {
+                            border: "1.5px solid #4b4a4a",
+
+
+                          }
                         },
                     }}
                   />
@@ -314,7 +319,7 @@ function LoginPage() {
                     minWidth: "100px",
                   }}
                 >
-                  <InputLabel htmlFor="outlined-adornment-password">
+                  <InputLabel htmlFor="outlined-adornment-password" sx={{mt: {xs:"-2%", sm: 0}}}>
                     Password
                   </InputLabel>
                   <OutlinedInput
@@ -323,17 +328,16 @@ function LoginPage() {
                     onChange={handleUser}
                     name="password"
                     variant="outlined"
-                    notched
+                    // notched
                     label="Password"
+                    size={sizes()}
+
                     sx={{
                       color: "#fff",
-                      "&.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: "#4b4a4a",
-                        },
+
                       "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
                         {
-                          border: "0.4px solid #4b4a4a",
+                          border: "1.5px solid #000",
                         },
                       "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                         {

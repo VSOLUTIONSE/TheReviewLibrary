@@ -22,6 +22,12 @@ import {
   getDocs,
   setDoc,
   addDoc,
+  orderBy,
+  query,
+
+  limit,
+  startAfter,
+  
   doc,
   deleteDoc,
   serverTimestamp,
@@ -66,7 +72,9 @@ function Notes({ bookId }) {
     }
 
     const populateCommentSlice = async () => {
-      const querySnapshot = await getDocs(collection(db, "Comments"));
+      const commentRef = collection(db, "Comments")
+      const queryData = query(commentRef, orderBy("time", "desc"), limit(4));
+      const querySnapshot = await getDocs(queryData);
       const database = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -105,6 +113,49 @@ function Notes({ bookId }) {
   console.log(uniqueUser);
   console.log(commentKeysId);
 
+  let lastVisible;
+  const getNextcomment = async () => {
+    setIsLoadMore(true);
+    // cosnt last_index_value = records[records.length - 1].created_at;
+    lastVisible = comments[comments.length - 1];
+    const time = lastVisible.time;
+    console.log("last", time);
+    try {
+      const commentsRef = collection(db, "Comments");
+      const queryData = query(
+        commentsRef,
+        orderBy("time", "desc"),
+        startAfter(time),
+        limit(4)
+      );
+
+      const querySnapshot = await getDocs(queryData);
+
+      if (querySnapshot.empty) {
+        console.log("no more");
+        // setIsLoadMore(false);
+        // display nice toast
+        return;
+      }
+
+      const database = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      dispatch2(returnDataFromDb(database));
+      // setIsLoadMore(false);
+    } catch (error) {
+      // Handle errors here
+      console.error("Error fetching data:", error);
+      // setIsLoadMore(false);
+   
+
+      // You might want to set an error state or show a user-friendly message
+    }
+  };
+
+  // add comment
   const handleAddComment = async (e) => {
     e.preventDefault();
 

@@ -244,7 +244,7 @@ input:focus {
 }
 
 .section-container {
-  margin: 10rem auto 2rem;
+  margin: 12rem auto 0;
   z-index: 20;
 }
 .container {
@@ -774,19 +774,19 @@ table tr th {
   .login-welcome {
     width: 100%;
     /* border: solid 2px red; */
-    margin: 0 auto;
+    margin:  -20% auto 2%;
   }
   .login-welcome h1 {
     font-size: 1.5rem;
     letter-spacing: 2px;
   }
   .login-welcome p {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 2px;
   }
   .section-container {
-    /* margin: 0 auto; */
+    margin-bottom: 70%;
   }
 }
 
@@ -815,7 +815,7 @@ table tr th {
 
 .login-page .add-form .error {
   text-align: center;
-  color: red;
+  color: rgb(253, 209, 209);
   margin: 8px auto;
   width: 90%;
 }
@@ -853,11 +853,29 @@ table tr th {
   height: 4rem;
   border-radius: 50%;
 }
+@media (max-width: 768px){
+  .login-signout button{
+    padding: 6px 15px;
+    font-size: .8rem;
+    
+  }
+  .logo {
+    position: absolute;
+    top: 2rem;
+    left: 5%;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+  }
+  
+}
+
 
 .logo1{
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
+  
 }
 
 .category-search {
@@ -1014,7 +1032,7 @@ table tr th {
   .lottie {
     position: absolute;
     top: -4rem;
-    left: -6rem;
+    left: -4rem;
     /* margin-top: 2%; */
     height: 100%;
     width: 50%;

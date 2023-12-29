@@ -9,11 +9,11 @@ export const notesSlice = createSlice({
       // newNote.id = notes.length
       //   ? Math.max(...notes.map((note) => note.id)) + 1
       //   : 1;
-      notes.unshift(newNote);
+      notes.unshift(newNote); 
     },
     returnFromDb: (notes, action) => {
       // console.log(action.payload)
-      return action.payload;
+      notes.push(...action.payload)
     },
     eraseNote: (notes, action) => {
       return notes.filter((note) => note.id != action.payload);
