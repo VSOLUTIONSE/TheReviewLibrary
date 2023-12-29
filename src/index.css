@@ -815,7 +815,7 @@ table tr th {
 
 .login-page .add-form .error {
   text-align: center;
-  color: rgb(253, 209, 209);
+  color: red;
   margin: 8px auto;
   width: 90%;
 }

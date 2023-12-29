@@ -1,7 +1,7 @@
 import FullPageLoader from "../components/FullPageLoader.jsx";
 import { useReducer, useState, useEffect } from "react";
 import { auth, db } from "../firebase/config.js";
-import { getDocs,doc,collection ,setDoc,} from "firebase/firestore";
+import { getDocs, doc, collection, setDoc } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -32,18 +32,16 @@ import { motion, useAnimationControls } from "framer-motion";
 import { fadeIn } from "../variants.js";
 import { Ellipsis } from "react-css-spinners";
 import Alert from "@mui/material/Alert";
-import { useTheme,useMediaQuery } from "@mui/material";
-
+import { useTheme, useMediaQuery } from "@mui/material";
 
 function LoginPage() {
   // const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState("login");
   const [userCredentials, setUserCredential] = useState({});
   const [error, setError] = useState(false);
-  const [errorMessage, seterrorMessage] = useState("");
+  const [errorMessage, seterrorMessage] = useState("Error! try again");
   const [state, dispatch] = useReducer(LoginSignUpReducer, LoginInitialState);
   const dispatch2 = useDispatch();
- 
 
   const popControl = useAnimationControls();
 
@@ -65,9 +63,7 @@ function LoginPage() {
       dispatch2(returnFromDb(database));
     };
     populateCommentSlice();
-
-}, [])
-
+  }, []);
 
   // mui
   const theme = useTheme();
@@ -298,14 +294,12 @@ function LoginPage() {
                     size={sizes()}
                     sx={{
                       backgroundColor: "transparent",
-                        "& .MuiOutlinedInput-root": {
-                          color: "#fff",
-                          "&.Mui-focused fieldset": {
-                            border: "1.5px solid #4b4a4a",
-
-
-                          }
+                      "& .MuiOutlinedInput-root": {
+                        color: "#fff",
+                        "&.Mui-focused fieldset": {
+                          border: "1.5px solid #4b4a4a",
                         },
+                      },
                     }}
                   />
                 </FormControl>
@@ -319,7 +313,10 @@ function LoginPage() {
                     minWidth: "100px",
                   }}
                 >
-                  <InputLabel htmlFor="outlined-adornment-password" sx={{mt: {xs:"-2%", sm: 0}}}>
+                  <InputLabel
+                    htmlFor="outlined-adornment-password"
+                    sx={{ mt: { xs: "-2%", sm: 0 } }}
+                  >
                     Password
                   </InputLabel>
                   <OutlinedInput
@@ -331,7 +328,6 @@ function LoginPage() {
                     // notched
                     label="Password"
                     size={sizes()}
-
                     sx={{
                       color: "#fff",
 
@@ -411,9 +407,16 @@ function LoginPage() {
                 </motion.button>
               )}
               {error && (
-                <Alert className="error" severity="error">
-                  {errorMessage}
-                </Alert>
+                <motion.div
+                  variants={fadeIn("up", 0.1)}
+                  initial="hidden"
+                  animate="show"
+                  exit="hidden"
+                >
+                  <Alert className="error" severity="error">
+                    {errorMessage}
+                  </Alert>
+                </motion.div>
               )}
 
               <p onClick={handleForgotPassword} className="forgot-password">
