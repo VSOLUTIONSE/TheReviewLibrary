@@ -244,7 +244,7 @@ input:focus {
 }
 
 .section-container {
-  margin: 12rem auto 0;
+  margin: 12rem auto 10%;
   z-index: 20;
 }
 .container {
@@ -786,7 +786,7 @@ table tr th {
     letter-spacing: 2px;
   }
   .section-container {
-    margin-bottom: 70%;
+    margin: 15% auto 25%;
   }
 }
 
@@ -1021,7 +1021,7 @@ table tr th {
 .lottie {
   position: absolute;
   left: -6rem;
-  margin-top: 4%;
+  /* margin-top: 4%; */
   height: 100%;
   width: 40%;
   opacity: 0.14;
