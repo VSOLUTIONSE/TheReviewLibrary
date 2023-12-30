@@ -13,7 +13,7 @@ import {
   LoginInitialState,
 } from "../reducers/loginReducer.js";
 import { StyledEngineProvider } from "@mui/material/styles";
-import { selectNotes } from "../store/notesSlice.js";
+import { selectNotes,returnFromDb } from "../store/notesSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers, selectUsers } from "../store/usersSlice.js";
 import Logo from "../assets/img/logo.jpg";
@@ -47,12 +47,12 @@ function LoginPage() {
 
   let newId = Math.max(...useSelector(selectNotes).map((note) => note.id));
 
+
   useEffect(() => {
     // if (comments.length > 0) {
     //   setisCommentLoading(false);
     //   return () => {};
     // }
-
     const populateCommentSlice = async () => {
       const querySnapshot = await getDocs(collection(db, "Comments"));
       const database = querySnapshot.docs.map((doc) => ({
@@ -64,7 +64,7 @@ function LoginPage() {
     };
     populateCommentSlice();
   }, []);
-
+  
   // mui
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up("lg"));
@@ -98,7 +98,7 @@ function LoginPage() {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       dispatch2(setUsers({ id: user.uid, email: user.email }));
-      setUserid(user.uid);
+     
     } else {
       dispatch2(setUsers(null));
     }
@@ -162,10 +162,13 @@ function LoginPage() {
     });
     const docRef = doc(db, "likers", credentials.user.uid);
     await setDoc(docRef, dynamicRangeObject);
+    dispatch2(returnFromDb([]));
   };
 
   const handleLogin = (e) => {
+    
     e.preventDefault();
+    dispatch2(returnFromDb([]))
     if (!userCredentials.email && !userCredentials.password) {
       alert("Kindly input your details first");
       return;

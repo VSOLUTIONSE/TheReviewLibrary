@@ -13,7 +13,7 @@ export const notesSlice = createSlice({
     },
     returnFromDb: (notes, action) => {
       // console.log(action.payload)
-      notes.push(...action.payload)
+      return [...action.payload]
     },
     eraseNote: (notes, action) => {
       return notes.filter((note) => note.id != action.payload);

@@ -154,13 +154,13 @@ textarea:focus {
   margin-top: 40px;
 }
 
-.write-comment{
+.write-comment {
   text-decoration: underline;
   font-weight: 500;
   color: #0d1f41;
 }
-@media (max-width: 768px){
-  .write-comment{
+@media (max-width: 768px) {
+  .write-comment {
     text-align: center;
     font-weight: 400px;
   }
@@ -489,35 +489,29 @@ table tr th {
 
 .single-book .book-cover img {
   width: 100%;
-  
+
   height: 100%;
   object-fit: cover;
   object-position: center;
-  
 }
 .single-book .book-cover {
   max-width: 40%;
   min-width: 30%;
   margin: 5% auto;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.144);
-  
-
 }
 
-@media( max-width: 900px){
-  
-.img-para {
- flex-direction: column;
- gap: 2rem;
+@media (max-width: 900px) {
+  .img-para {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .single-book .book-cover {
+    max-width: 60%;
+    min-width: 70%;
+    /* height: 90%; */
+  }
 }
-.single-book .book-cover{
-  max-width: 60%;
-  min-width: 70%;
-  /* height: 90%; */
-
-}
-}
-
 
 .single-book .book-details {
   padding-left: 20px;
@@ -571,7 +565,7 @@ table tr th {
     margin-top: 20px;
     max-width: 90%;
   }
-  .single-book .book-details p{
+  .single-book .book-details p {
     width: 100%;
     /* border: 2px red solid; */
     text-align: justify;
@@ -628,12 +622,13 @@ table tr th {
   /* justify-content: center; */
   /* align-items: center; */
   border-radius: 25px;
-  margin: 0 auto;
+  margin-right: 1rem;
+
 }
 
 .note-cont {
   display: flex;
-  margin-left: 2%;
+  margin-left: 1%;
   gap: 10px;
   /* justify-content: left; */
   /* align-items: center; */
@@ -643,14 +638,13 @@ table tr th {
 .notes .note .erase-note {
   margin-left: 1%;
   position: absolute;
-   right: 8px;
+  right: 8px;
   /* top: 4px; */
   /* color: red; */
-  cursor: pointer; 
-  
+  cursor: pointer;
 }
 
-.engage{
+.engage {
   display: flex;
   align-items: center;
   text-align: center;
@@ -659,17 +653,15 @@ table tr th {
   cursor: pointer;
   position: relative;
   padding: 2%;
-
-
 }
 
-.icons{
+.icons {
   position: absolute;
   left: 2px;
   bottom: 0.5%;
 }
 
-.likes{
+.likes {
   position: absolute;
   left: 6%;
   /* bottom: 10%; */
@@ -679,56 +671,69 @@ table tr th {
   display: block;
 } */
 
-@media (max-width: 1100px){
-  .likes{
+@media (max-width: 1100px) {
+  .likes {
     position: absolute;
     left: 15%;
     /* bottom: 10%; */
     /* border: 2px red solid; */
   }
 
-  .engage{
+  .engage {
     margin-top: 4%;
     padding: 3%;
   }
-  .icons{
+  .icons {
     bottom: 1%;
   }
-
 }
-@media (max-width: 768px){
-  .likes{
+@media (max-width: 768px) {
+  .likes {
     position: absolute;
-    left: 15%;
+    left: 25%;
     /* bottom: 10%; */
     /* border: 2px red solid; */
   }
+  .notes .note p {
+    text-align: left;
+    font-size: 0.7rem;
+  }
+  .notes .note {
+    margin-bottom: 12px;
+    padding: 10px;
+    min-width: 80%;
+    width: 80%;
+    border: 0.5px solid #3e3e3e27;
+    border-radius: 10px;
+    position: relative;
+  }
+  .notes .note h3 {
+font-size: .7rem;
+  }
 
-  .engage{
-    margin-top: 5%;
+  .engage {
+    margin-top: 4%;
     padding: 5%;
   }
-  .icons{
+  .icons {
     bottom: 1%;
   }
-
 }
-@media (max-width: 500px){
-  .likes{
+@media (max-width: 500px) {
+  .likes {
     position: absolute;
-    left: 15%;
+    left: 20%;
     /* bottom: 10%; */
     /* border: 2px red solid; */
   }
 
-  .engage{
-    margin-top: 7%;
-    padding: 7%;
+  .engage {
+    margin-top: 6%;
+    padding:6%;
   }
-  .icons{
-    bottom: 1%;
+  .icons {
+    bottom: 0.5%;
   }
-
 }
 .notes .note h3 {
   margin-bottom: 12px;
@@ -774,7 +779,7 @@ table tr th {
   .login-welcome {
     width: 100%;
     /* border: solid 2px red; */
-    margin:  -20% auto 2%;
+    margin: -20% auto 2%;
   }
   .login-welcome h1 {
     font-size: 1.5rem;
@@ -853,11 +858,10 @@ table tr th {
   height: 4rem;
   border-radius: 50%;
 }
-@media (max-width: 768px){
-  .login-signout button{
+@media (max-width: 768px) {
+  .login-signout button {
     padding: 6px 15px;
-    font-size: .8rem;
-    
+    font-size: 0.8rem;
   }
   .logo {
     position: absolute;
@@ -867,15 +871,12 @@ table tr th {
     height: 2.5rem;
     border-radius: 50%;
   }
-  
 }
 
-
-.logo1{
-  width: 2rem;
-  height: 2rem;
+.logo1 {
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  
 }
 
 .category-search {
@@ -898,6 +899,12 @@ table tr th {
   justify-content: space-around;
   gap: 1rem;
   font-family: "Montserrat Alternates", sans-serif;
+}
+.MuiTab-textcolorPrimary.Mui-selected {
+  color: #fff !important;
+}
+.css-1aquho2-MuiTabs-indicator {
+  background-color: transparent !important;
 }
 .category-btn {
   display: flex;
@@ -928,6 +935,7 @@ table tr th {
     text-align: center;
     gap: 0.5rem;
     width: 100%;
+
     /* margin-top: 0.8rem; */
   }
 
@@ -1005,6 +1013,7 @@ table tr th {
 .active-btn {
   max-width: 100px;
   width: 200px;
+
   font-family: "Montserrat Alternates", sans-serif;
 }
 .active-btn:nth-of-type(3) {
@@ -1016,6 +1025,14 @@ table tr th {
   background: #1a3363;
   color: #ffff;
   border: none;
+}
+
+@media (max-width: 768px) {
+  .active-btn:hover {
+    background: #1a3363;
+    color: #ffff;
+    border: none;
+  }
 }
 
 .lottie {

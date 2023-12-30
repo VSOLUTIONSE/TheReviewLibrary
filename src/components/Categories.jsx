@@ -14,12 +14,16 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config.js";
 import { motion } from "framer-motion";
 import { fadeIn } from "../variants.js";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
 
 const Categories = ({ setBookIsLoading, setshowCatchError }) => {
   //   const [category, setCategory] = useState("");
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const [categoryIsLoading, setCategoryLoading] = useState(true);
+  const [value, setValue] = React.useState("all");
 
   const btnData = [
     { id: 1, name: "all" },
@@ -36,6 +40,7 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
       setIndex(itermIndex);
       setBookIsLoading(true);
       const selectedValue = e.target.value;
+      setValue(selectedValue)
       const querySnapshot = await getDocs(collection(db, "Books"));
       const database = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -83,6 +88,9 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
     }
   };
 
+
+  
+
   return (
     <>
       <StyledEngineProvider injectFirst>
@@ -93,33 +101,42 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
           animate="show"
           exit="hidden"
           transition={{ duration: 0.6, ease: "easeIn" }}
-
         >
           <div className="category-btn">
             <h2 className="category-h2">Category</h2>
-            <div className="btns">
+            <Tabs
+              value={value}
+              variant="scrollable"
+              scrollButtons
+              allowScrollButtonsMobile
+              aria-label="scrollable force tabs example"
+              className="btns"
+            >
               {btnData.map((button, itermIndex) => (
                 <Button
                   key={button.id}
                   className="active-btn"
+                  // component="button"
+                  
+                  label={button.name}
                   sx={{
                     background: `${index === itermIndex && "#0d1f41"}`,
+                    
                     color: `${index === itermIndex ? "#ffff" : "#1a3363"}`,
                     fontWeight: { xs: 500, md: 600 },
                     fontSize: { md: "1rem" },
                     textTransform: "capitalize",
                     border: "0.7px solid #1a3363",
+                    mx: ".2rem"
                     // fontFamily: "Montserrat Alternates,"
                   }}
                   variant="outlined"
                   value={button.name}
                   type="button"
                   onClick={(e) => handleCategories(e, itermIndex)}
-                >
-                  {button.name}
-                </Button>
+                >{button.name}</Button>
               ))}
-            </div>
+            </Tabs>
           </div>
           <div className="search-field">
             <Paper

@@ -72,7 +72,7 @@ function Header({ pageTitle }) {
               src={Logo}
               alt=""
               className="logo1"
-              sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}
+              sx={{ display: { xs: "none", md: "flex" }, mr: 3 }}
             />
             <Typography
               variant="h6"
@@ -178,7 +178,7 @@ function Header({ pageTitle }) {
               src={Logo}
               alt=""
               className="logo1"
-              sx={{ display: { xs: "flex", md: "none" }, mr: 2 }}
+              sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
             />
             <Typography
               variant="h5"
@@ -191,7 +191,8 @@ function Header({ pageTitle }) {
                 flexGrow: 1,
                 fontFamily: "monospace",
                 fontWeight: 700,
-                letterSpacing: ".3rem",
+                fontSize: ".9rem",
+                letterSpacing: {xs:".2rem", sm: ".3rem"},
                 color: "inherit",
                 textDecoration: "none",
               }}

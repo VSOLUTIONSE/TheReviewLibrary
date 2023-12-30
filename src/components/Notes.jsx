@@ -24,10 +24,8 @@ import {
   addDoc,
   orderBy,
   query,
-
   limit,
   startAfter,
-  
   doc,
   deleteDoc,
   serverTimestamp,
@@ -49,7 +47,7 @@ function Notes({ bookId }) {
   const [isCommentLoading, setisCommentLoading] = useState(true);
   const userData = useSelector(selectUsers);
   const userId = userData.currentUser.id;
-
+console.log(userId)
   const dispatch2 = useDispatch();
   const comments = useSelector(selectNotes).filter(
     (comment) => comment.book_id == bookId
@@ -57,7 +55,7 @@ function Notes({ bookId }) {
   const allComments = useSelector(selectNotes);
   const userState = useSelector(selectUserData);
   const commentKeysId = userState.propertyNames;
-  // console.log(allComments)
+  console.log(comments)
 
   const uniqueUser = userState.uniqueUser;
   let newId = Math.max(...useSelector(selectNotes).map((note) => note.id)) + 1;
@@ -66,14 +64,14 @@ function Notes({ bookId }) {
   const location = useLocation();
 
   useEffect(() => {
-    if (comments.length > 0) {
-      setisCommentLoading(false);
-      return () => {};
-    }
+    // if (comments.length > 0) {
+    //   setisCommentLoading(false);
+    //   return () => {};
+    // }
 
     const populateCommentSlice = async () => {
-      const commentRef = collection(db, "Comments")
-      const queryData = query(commentRef, orderBy("time", "desc"), limit(4));
+      const commentRef = collection(db, "Comments");
+      const queryData = query(commentRef, orderBy("time", "desc"), limit(2));
       const querySnapshot = await getDocs(queryData);
       const database = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -90,11 +88,12 @@ function Notes({ bookId }) {
         ...doc.data(),
       }));
 
-      // console.log(database);
+      console.log(database);
       dispatch2(returnLikesFromDb(database));
       const Uniqueuser = database.find(
         (eachUserdata) => eachUserdata.id === userId
       );
+      
       if (Uniqueuser) {
         dispatch2(populateUniqueUser(Uniqueuser));
       }
@@ -108,52 +107,51 @@ function Notes({ bookId }) {
     };
     populateLikesSlice();
     populateCommentSlice();
-  }, [location.pathname]);
+  }, []);
 
   console.log(uniqueUser);
   console.log(commentKeysId);
 
-  let lastVisible;
-  const getNextcomment = async () => {
-    setIsLoadMore(true);
-    // cosnt last_index_value = records[records.length - 1].created_at;
-    lastVisible = comments[comments.length - 1];
-    const time = lastVisible.time;
-    console.log("last", time);
-    try {
-      const commentsRef = collection(db, "Comments");
-      const queryData = query(
-        commentsRef,
-        orderBy("time", "desc"),
-        startAfter(time),
-        limit(4)
-      );
+  // let lastVisible;
+  // const getNextcomment = async () => {
+  //   setIsLoadMore(true);
+  //   // cosnt last_index_value = records[records.length - 1].created_at;
+  //   lastVisible = comments[comments.length - 1];
+  //   const time = lastVisible.time;
+  //   console.log("last", time);
+  //   try {
+  //     const commentsRef = collection(db, "Comments");
+  //     const queryData = query(
+  //       commentsRef,
+  //       orderBy("time", "desc"),
+  //       startAfter(time),
+  //       limit(4)
+  //     );
 
-      const querySnapshot = await getDocs(queryData);
+  //     const querySnapshot = await getDocs(queryData);
 
-      if (querySnapshot.empty) {
-        console.log("no more");
-        // setIsLoadMore(false);
-        // display nice toast
-        return;
-      }
+  //     if (querySnapshot.empty) {
+  //       console.log("no more");
+  //       // setIsLoadMore(false);
+  //       // display nice toast
+  //       return;
+  //     }
 
-      const database = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+  //     const database = querySnapshot.docs.map((doc) => ({
+  //       ...doc.data(),
+  //       id: doc.id,
+  //     }));
 
-      dispatch2(returnDataFromDb(database));
-      // setIsLoadMore(false);
-    } catch (error) {
-      // Handle errors here
-      console.error("Error fetching data:", error);
-      // setIsLoadMore(false);
-   
+  //     dispatch2(returnFromDb(database));
+  //     // setIsLoadMore(false);
+  //   } catch (error) {
+  //     // Handle errors here
+  //     console.error("Error fetching data:", error);
+  //     // setIsLoadMore(false);
 
-      // You might want to set an error state or show a user-friendly message
-    }
-  };
+  //     // You might want to set an error state or show a user-friendly message
+  //   }
+  // };
 
   // add comment
   const handleAddComment = async (e) => {
@@ -173,8 +171,8 @@ function Notes({ bookId }) {
     console.log(newId);
     const newComment = {
       id: newId,
+      time: serverTimestamp(),
       book_id: bookId,
-      // time: serverTimestamp(),
       name: document.querySelector("input[name=name]").value,
       text: document.querySelector("textarea[name=comment]").value,
       likes: 0,
@@ -183,6 +181,8 @@ function Notes({ bookId }) {
       setsubmitComment(true);
       const data = {
         book_id: bookId,
+        time: serverTimestamp(),
+
         name: document.querySelector("input[name=name]").value,
         text: document.querySelector("textarea[name=comment]").value,
         likes: 0,
@@ -282,53 +282,55 @@ function Notes({ bookId }) {
             </div>
           </div>
         ) : (
-          <div className="notes">
-            {comments.length === 0 && (
-              <p className="not-found">Be the First to comment!</p>
-            )}
-            {comments?.map((comment) => (
-              <section key={comment.id} className="note-cont">
-                <Avatar sx={{ mt: 1, background: "" }}>
-                  {comment.name.charAt(0).toUpperCase()}
-                </Avatar>
-                <div className="note">
-                  <h3>{comment.name}</h3>
-                  <p>{comment.text}</p>
-                  <div className="engage">
-                    {commentKeysId.map((commentKey) => (
-                      <div key={commentKey} style={{}}>
-                        {commentKey === comment.id &&
-                          uniqueUser[comment.id] === true && (
-                            <div
-                              className="icons"
-                              onClick={() => handleUnlike(comment.id)}
-                            >
-                              <FavoriteIcon />
-                            </div>
-                          )}
-                        {commentKey === comment.id &&
-                          !uniqueUser[comment.id] && (
-                            <div
-                              className="icons"
-                              onClick={() => handleLike(comment.id)}
-                            >
-                              <FavoriteBorderIcon />
-                            </div>
-                          )}
+          <section>
+            <div className="notes">
+              {comments.length === 0 && (
+                <p className="not-found">Be the First to comment!</p>
+              )}
+              {comments?.map((comment) => (
+                <section key={comment.id} className="note-cont">
+                  <Avatar sx={{ mt: 1, background: "" }}>
+                    {comment.name.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <div className="note">
+                    <h3>{comment.name}</h3>
+                    <p>{comment.text}</p>
+                    <div className="engage">
+                      {commentKeysId.map((commentKey) => (
+                        <div key={commentKey} style={{}}>
+                          {commentKey === comment.id &&
+                            uniqueUser[comment.id] === true && (
+                              <div
+                                className="icons"
+                                onClick={() => handleUnlike(comment.id)}
+                              >
+                                <FavoriteIcon />
+                              </div>
+                            )}
+                          {commentKey === comment.id &&
+                            !uniqueUser[comment.id] && (
+                              <div
+                                className="icons"
+                                onClick={() => handleLike(comment.id)}
+                              >
+                                <FavoriteBorderIcon />
+                              </div>
+                            )}
+                        </div>
+                      ))}
+                      <p className="likes">{comment.likes} likes</p>
+                      <div
+                        onClick={() => handleEraseNote(comment.id)}
+                        className="erase-note"
+                      >
+                        {comment.userId === userId && <DeleteIcon />}
                       </div>
-                    ))}
-                    <p className="likes">{comment.likes} likes</p>
-                    <div
-                      onClick={() => handleEraseNote(comment.id)}
-                      className="erase-note"
-                    >
-                      {comment.userId === userId && <DeleteIcon />}
                     </div>
                   </div>
-                </div>
-              </section>
-            ))}
-          </div>
+                </section>
+              ))}
+            </div>
+          </section>
         )}
 
         <details>

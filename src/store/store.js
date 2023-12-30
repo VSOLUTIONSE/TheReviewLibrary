@@ -14,5 +14,9 @@ export default configureStore({
     book: bookReducer,
     likes: likesReducer,
     userData: userDataReducer
-  }
+  },
+  middleware:(getDefaultMiddleware) =>
+  getDefaultMiddleware({
+    serializableCheck: false
+  }),
 })
