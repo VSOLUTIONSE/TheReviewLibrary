@@ -16,6 +16,7 @@
     "@mui/material": "^5.14.16",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.6.0",
+    "dayjs": "^1.11.10",
     "firebase": "^10.5.2",
     "framer-motion": "^10.16.5",
     "javascript-time-ago": "^2.5.9",

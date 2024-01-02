@@ -5,7 +5,12 @@ import "./index.css";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { AnimatePresence } from "framer-motion";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json"
+import ru from "javascript-time-ago/locale/ru.json"
 
+TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(ru);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <AnimatePresence>

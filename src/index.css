@@ -1118,3 +1118,14 @@ font-size: .7rem;
 .more span:hover {
   color: #f9ad6a;
 }
+
+.name-time{
+  display: flex;
+  align-items: center;
+  gap: 1%;
+
+}
+
+.time-ago{
+  margin-bottom: 11px;
+}

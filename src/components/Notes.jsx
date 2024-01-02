@@ -34,7 +34,9 @@ import {
 } from "firebase/firestore";
 import { setUsers, selectUsers } from "../store/usersSlice.js";
 import { returnLikesFromDb, selectLikes } from "../store/likesSlice.js";
-
+import dayjs from "dayjs";
+import ReactTimeAgo from "react-time-ago";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { useState, useEffect } from "react";
 import { Circle, Ellipsis } from "react-css-spinners";
 import Avatar from "@mui/material/Avatar";
@@ -47,7 +49,7 @@ function Notes({ bookId }) {
   const [isCommentLoading, setisCommentLoading] = useState(true);
   const userData = useSelector(selectUsers);
   const userId = userData.currentUser.id;
-console.log(userId)
+  console.log(userId);
   const dispatch2 = useDispatch();
   const comments = useSelector(selectNotes).filter(
     (comment) => comment.book_id == bookId
@@ -55,12 +57,12 @@ console.log(userId)
   const allComments = useSelector(selectNotes);
   const userState = useSelector(selectUserData);
   const commentKeysId = userState.propertyNames;
-  console.log(comments)
+  console.log(comments);
 
   const uniqueUser = userState.uniqueUser;
-  let newId = Math.max(...useSelector(selectNotes).map((note) => note.id)) + 1;
-  // const likersData = useSelector(selectLikes);
-  console.log(newId);
+  // let newId = Math.max(...useSelector(selectNotes).map((note) => note.id)) + 1;
+  // // const likersData = useSelector(selectLikes);
+  // console.log(newId);
   const location = useLocation();
 
   useEffect(() => {
@@ -93,7 +95,7 @@ console.log(userId)
       const Uniqueuser = database.find(
         (eachUserdata) => eachUserdata.id === userId
       );
-      
+
       if (Uniqueuser) {
         dispatch2(populateUniqueUser(Uniqueuser));
       }
@@ -108,6 +110,10 @@ console.log(userId)
     populateLikesSlice();
     populateCommentSlice();
   }, []);
+
+  // Get the date in "YYYY-MM-DD" format
+
+  // Outputs something like "2023-12-18" (current date)
 
   console.log(uniqueUser);
   console.log(commentKeysId);
@@ -152,18 +158,24 @@ console.log(userId)
   //     // You might want to set an error state or show a user-friendly message
   //   }
   // };
-
   // add comment
+
   const handleAddComment = async (e) => {
     e.preventDefault();
 
-    const sameExit = allComments.find((comment) => comment.id === newId);
+    const createdTime = Date.now();
+    console.log(createdTime);
 
-    console.log(sameExit);
-    if (sameExit) {
-      newId = newId + 1;
-      dispatch2(addNewCommentId(newId));
-    } else {
+    const querySnapshot = await getDocs(collection(db, "Comments"));
+    const database = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const lastComment = database[database.length - 1];
+    const newId = lastComment.id + 1;
+
+    if (newId) {
       dispatch2(addNewCommentId(newId));
     }
 
@@ -173,6 +185,7 @@ console.log(userId)
       id: newId,
       time: serverTimestamp(),
       book_id: bookId,
+      createdTime,
       name: document.querySelector("input[name=name]").value,
       text: document.querySelector("textarea[name=comment]").value,
       likes: 0,
@@ -182,7 +195,7 @@ console.log(userId)
       const data = {
         book_id: bookId,
         time: serverTimestamp(),
-
+        createdTime,
         name: document.querySelector("input[name=name]").value,
         text: document.querySelector("textarea[name=comment]").value,
         likes: 0,
@@ -293,7 +306,11 @@ console.log(userId)
                     {comment.name.charAt(0).toUpperCase()}
                   </Avatar>
                   <div className="note">
-                    <h3>{comment.name}</h3>
+                    <div className="name-time">
+                      <h3>{comment.name}  .</h3> 
+                      <ReactTimeAgo className="time-ago" date={comment.createdTime} locale="en-Us" />
+                    </div>
+
                     <p>{comment.text}</p>
                     <div className="engage">
                       {commentKeysId.map((commentKey) => (
@@ -318,7 +335,7 @@ console.log(userId)
                             )}
                         </div>
                       ))}
-                      <p className="likes">{comment.likes} likes</p>
+                      <p className="likes">{comment.likes} like{comment.likes == 0 || comment.likes == 1 ? " " : "s"}</p>
                       <div
                         onClick={() => handleEraseNote(comment.id)}
                         className="erase-note"

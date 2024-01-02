@@ -44,10 +44,10 @@ function LoginPage() {
   const dispatch2 = useDispatch();
 
   const popControl = useAnimationControls();
+const [newId, setNewId] = useState()
+  
 
-  let newId = Math.max(...useSelector(selectNotes).map((note) => note.id));
-
-
+  
   useEffect(() => {
     // if (comments.length > 0) {
     //   setisCommentLoading(false);
@@ -60,10 +60,12 @@ function LoginPage() {
         ...doc.data(),
       }));
       // console.log(database);
-      dispatch2(returnFromDb(database));
+      let newId = Math.max(...database.map((note) => note.id))
+  ;   setNewId(newId)
     };
     populateCommentSlice();
   }, []);
+  console.log(newId)
   
   // mui
   const theme = useTheme();
@@ -162,13 +164,11 @@ function LoginPage() {
     });
     const docRef = doc(db, "likers", credentials.user.uid);
     await setDoc(docRef, dynamicRangeObject);
-    dispatch2(returnFromDb([]));
   };
 
   const handleLogin = (e) => {
     
     e.preventDefault();
-    dispatch2(returnFromDb([]))
     if (!userCredentials.email && !userCredentials.password) {
       alert("Kindly input your details first");
       return;
