@@ -95,16 +95,37 @@ function Notes({ bookId }) {
       const Uniqueuser = database.find(
         (eachUserdata) => eachUserdata.id === userId
       );
-
+      console.log(Uniqueuser);
       if (Uniqueuser) {
-        dispatch2(populateUniqueUser(Uniqueuser));
-      }
-      const propertyNames = Object.keys(Uniqueuser);
-      // console.log(Uniqueuser);
-      if (propertyNames) {
-        dispatch2(populatePropertyNames(propertyNames));
-      }
+        const querySnapshot = await getDocs(collection(db, "Comments"));
+        const commentsDatabase = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
+        const lastComment = commentsDatabase[commentsDatabase.length - 1];
+        const end = Number(lastComment.id);
+
+        const propertyNames = Object.keys(Uniqueuser);
+
+        const numberArray = propertyNames.map(Number);
+        const start = numberArray[numberArray.length - 2];
+
+        const startRange = start;
+        const endRange = end;
+
+        let dynamicRangeObject = {};
+
+        for (let i = startRange; i <= endRange; i++) {
+          dynamicRangeObject[i] = false;
+        }
+        const updatedUser = { ...Uniqueuser, ...dynamicRangeObject };
+        dispatch2(populateUniqueUser(updatedUser));
+        if (propertyNames) {
+          dispatch2(populatePropertyNames(propertyNames));
+        }
+      }
+      // console.log(Uniqueuser);
       // console.log(propertyNames);
     };
     populateLikesSlice();
@@ -173,11 +194,11 @@ function Notes({ bookId }) {
     }));
 
     const lastComment = database[database.length - 1];
-    const newId = lastComment.id + 1;
+    const newId = Number(lastComment.id) + 1;
 
-    if (newId) {
+    
       dispatch2(addNewCommentId(newId));
-    }
+  
 
     console.log(userState);
     console.log(newId);
@@ -189,6 +210,7 @@ function Notes({ bookId }) {
       name: document.querySelector("input[name=name]").value,
       text: document.querySelector("textarea[name=comment]").value,
       likes: 0,
+      userId: userId,
     };
     if (newComment.name && newComment.text) {
       setsubmitComment(true);
@@ -307,8 +329,12 @@ function Notes({ bookId }) {
                   </Avatar>
                   <div className="note">
                     <div className="name-time">
-                      <h3>{comment.name}  .</h3> 
-                      <ReactTimeAgo className="time-ago" date={comment.createdTime} locale="en-Us" />
+                      <h3>{comment.name} .</h3>
+                      <ReactTimeAgo
+                        className="time-ago"
+                        date={comment.createdTime}
+                        locale="en-Us"
+                      />
                     </div>
 
                     <p>{comment.text}</p>
@@ -335,7 +361,10 @@ function Notes({ bookId }) {
                             )}
                         </div>
                       ))}
-                      <p className="likes">{comment.likes} like{comment.likes == 0 || comment.likes == 1 ? " " : "s"}</p>
+                      <p className="likes">
+                        {comment.likes} like
+                        {comment.likes == 0 || comment.likes == 1 ? " " : "s"}
+                      </p>
                       <div
                         onClick={() => handleEraseNote(comment.id)}
                         className="erase-note"
