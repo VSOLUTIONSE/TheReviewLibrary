@@ -334,6 +334,7 @@ function Notes({ bookId }) {
                       <ReactTimeAgo
                         date={comment.createdTime}
                         locale="en-Us"
+                        timeStyle="twitter"
                       />
                         </div>
                     </div>
