@@ -18,7 +18,6 @@ import { Divider } from "@mui/material";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useDispatch } from "react-redux";
 
-
 import { returnDataFromDb } from "../store/booksSlice.js";
 import { DualRing, Ellipsis, Ring } from "react-css-spinners";
 import ErrorBackDrop from "../components/ErrorBackDrop.jsx";
@@ -104,19 +103,7 @@ function BooksPage() {
     }
   };
 
-  
-
   console.log(data);
-
-  // useEffect(() => {
-  // window.rEventListener("scroll", handleScroll);
-
-  // }, [handleScroll]);
-
-  // Attach the event listener when the component mounts
-
-  // Remove the event listener when the component unmounts
-  // Empty dependency array means this effect runs once when the component mounts
 
   return (
     <>

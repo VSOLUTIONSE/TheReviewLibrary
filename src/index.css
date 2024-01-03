@@ -623,7 +623,6 @@ table tr th {
   /* align-items: center; */
   border-radius: 25px;
   margin-right: 1rem;
-
 }
 
 .note-cont {
@@ -708,7 +707,7 @@ table tr th {
     position: relative;
   }
   .notes .note h3 {
-font-size: .7rem;
+    font-size: 0.7rem;
   }
 
   .engage {
@@ -729,7 +728,7 @@ font-size: .7rem;
 
   .engage {
     margin-top: 6%;
-    padding:6%;
+    padding: 6%;
   }
   .icons {
     bottom: 0.5%;
@@ -1119,13 +1118,20 @@ font-size: .7rem;
   color: #f9ad6a;
 }
 
-.name-time{
+.name-time {
   display: flex;
   align-items: center;
   gap: 1%;
-
 }
 
-.time-ago{
+.time-ago {
   margin-bottom: 11px;
+}
+
+@media (max-width: 768px) {
+  .time-ago {
+    font-size: 0.4rem;
+  margin-bottom: 7px;
+
+  }
 }
