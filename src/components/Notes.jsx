@@ -330,11 +330,12 @@ function Notes({ bookId }) {
                   <div className="note">
                     <div className="name-time">
                       <h3>{comment.name} .</h3>
+                      <div className="time-ago" >
                       <ReactTimeAgo
-                        className="time-ago"
                         date={comment.createdTime}
                         locale="en-Us"
                       />
+                        </div>
                     </div>
 
                     <p>{comment.text}</p>
