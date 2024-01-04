@@ -22,6 +22,8 @@ import { returnDataFromDb } from "../store/booksSlice.js";
 import { DualRing, Ellipsis, Ring } from "react-css-spinners";
 import ErrorBackDrop from "../components/ErrorBackDrop.jsx";
 import ReplayIcon from "@mui/icons-material/Replay";
+import ScrollToTop from "../components/ToTop.jsx";
+
 function BooksPage() {
   const dispatch2 = useDispatch();
   const data = useSelector(selectBooks);
@@ -108,6 +110,7 @@ function BooksPage() {
   return (
     <>
       <Header />
+      <ScrollToTop />
       {
         <ErrorBackDrop
           setshowCatchError={setshowCatchError}

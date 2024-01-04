@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Ellipsis, Ring } from "react-css-spinners";
 import { delay, easeOut, motion } from "framer-motion";
 import { fadeIn } from "../variants.js";
+import ScrollToTop from "../components/ToTop.jsx";
 
 function AddBookPage() {
   const [issubmitComment, setsubmitComment] = useState(false);
@@ -43,6 +44,7 @@ function AddBookPage() {
   return (
     <>
       <Header />
+      <ScrollToTop/>
       <motion.div className="container"
       variants={fadeIn("right", 0.2)}
       initial="hidden"

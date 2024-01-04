@@ -14,6 +14,7 @@ import Header from "../components/Header.jsx";
 // import {eraseBookNotes} from '../store/notesSlice.js';
 import { useEffect } from "react";
 import { Circle, Ellipsis } from "react-css-spinners";
+import ScrollToTop from "../components/ToTop.jsx";
 import { Divider } from "@mui/material";
 
 function SingleBookPage() {
@@ -51,6 +52,8 @@ const location = useLocation()
   return (
     <>
       <Header />
+      <ScrollToTop />
+
       <div className="container">
         <Link to="/">
           <button className="btn">← Back to Books</button>
