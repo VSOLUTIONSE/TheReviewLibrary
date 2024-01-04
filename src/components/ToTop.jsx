@@ -12,7 +12,7 @@ const BackToTop = styled.div`
   height: 50px;
   text-align: center;
   border-radius: 100%;
-  background-color: rgba(143, 130, 130, 0.62);
+  background-color: #faa75e;
   display: flex;
   z-index: 20;
   align-items: center;
@@ -27,6 +27,11 @@ const BackToTop = styled.div`
       inset -1px -1px 3px rgba(0, 0, 0, 0.39);
     width: 53px;
     height: 53px;
+  }
+
+  @media (max-width: 768px){
+    width: 40px;
+  height: 40px;
   }
 `;
 
