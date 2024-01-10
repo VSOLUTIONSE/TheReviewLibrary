@@ -127,7 +127,7 @@ function Notes({ bookId }) {
         }
       }
 
-      return ()=>{}
+      return () => {};
       // console.log(Uniqueuser);
       // console.log(propertyNames);
     };
@@ -149,7 +149,7 @@ function Notes({ bookId }) {
     lastVisible = comments[comments.length - 1];
     const time = lastVisible.time;
     console.log("last", time);
-    console.log(toSeeMore)
+    console.log(toSeeMore);
 
     // if ( ) return
     try {
@@ -324,72 +324,73 @@ function Notes({ bookId }) {
           </div>
         ) : (
           <section>
-            {comments.length === 0 && (
+            {comments.length === 0 ? (
               <p className="not-found">Be the First to comment!</p>
-            )}
-            <div className="notes">
-              {comments?.map((comment) => (
-                <section key={comment.id} className="note-cont">
-                  <Avatar sx={{ mt: 1, background: "" }}>
-                    {comment.name.charAt(0).toUpperCase()}
-                  </Avatar>
-                  <div className="note">
-                    <div className="name-time">
-                      <h3>{comment.name} .</h3>
-                      <div className="time-ago">
-                        <ReactTimeAgo
-                          date={comment.createdTime}
-                          locale="en-Us"
-                          timeStyle="twitter"
-                        />
-                      </div>
-                    </div>
-
-                    <p>{comment.text}</p>
-                    <div className="engage">
-                      {commentKeysId.map((commentKey) => (
-                        <div key={commentKey} style={{}}>
-                          {commentKey === comment.id &&
-                            uniqueUser[comment.id] === true && (
-                              <div
-                                className="icons"
-                                onClick={() => handleUnlike(comment.id)}
-                              >
-                                <FavoriteIcon />
-                              </div>
-                            )}
-                          {commentKey === comment.id &&
-                            !uniqueUser[comment.id] && (
-                              <div
-                                className="icons"
-                                onClick={() => handleLike(comment.id)}
-                              >
-                                <FavoriteBorderIcon />
-                              </div>
-                            )}
+            ) : (
+              <div className="notes">
+                {comments?.map((comment) => (
+                  <section key={comment.id} className="note-cont">
+                    <Avatar sx={{ mt: 1, background: "" }}>
+                      {comment.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <div className="note">
+                      <div className="name-time">
+                        <h3>{comment.name} .</h3>
+                        <div className="time-ago">
+                          <ReactTimeAgo
+                            date={comment.createdTime}
+                            locale="en-Us"
+                            timeStyle="twitter"
+                          />
                         </div>
-                      ))}
-                      <p className="likes">
-                        {comment.likes} like
-                        {comment.likes == 0 || comment.likes == 1 ? "" : "s"}
-                      </p>
-                      <div
-                        onClick={() => handleEraseNote(comment.id)}
-                        className="erase-note"
-                      >
-                        {comment.userId === userId && <DeleteIcon />}
+                      </div>
+
+                      <p>{comment.text}</p>
+                      <div className="engage">
+                        {commentKeysId.map((commentKey) => (
+                          <div key={commentKey} style={{}}>
+                            {commentKey === comment.id &&
+                              uniqueUser[comment.id] === true && (
+                                <div
+                                  className="icons"
+                                  onClick={() => handleUnlike(comment.id)}
+                                >
+                                  <FavoriteIcon />
+                                </div>
+                              )}
+                            {commentKey === comment.id &&
+                              !uniqueUser[comment.id] && (
+                                <div
+                                  className="icons"
+                                  onClick={() => handleLike(comment.id)}
+                                >
+                                  <FavoriteBorderIcon />
+                                </div>
+                              )}
+                          </div>
+                        ))}
+                        <p className="likes">
+                          {comment.likes} like
+                          {comment.likes == 0 || comment.likes == 1 ? "" : "s"}
+                        </p>
+                        <div
+                          onClick={() => handleEraseNote(comment.id)}
+                          className="erase-note"
+                        >
+                          {comment.userId === userId && <DeleteIcon />}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </section>
-              ))}
-              {!toSeeMore && <p className="commentLoader">loading...</p>}
-              {comments.length  > 5 && (
+                  </section>
+                ))}
+                {!toSeeMore && <p className="commentLoader">loading...</p>}
+                {comments.length > 5 && (
                   <div onClick={getNextcomment} className="comment-see-more">
                     {toSeeMore && "...see more"}
                   </div>
                 )}
-            </div>
+              </div>
+            )}
           </section>
         )}
 
