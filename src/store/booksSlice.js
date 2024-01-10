@@ -17,17 +17,14 @@ export const booksSlice = createSlice({
         case "all":
           return payload[1];
         case "spiritual":
-          return payload[1].filter(({ category }) => category === type);
-
+          return payload[1]
         case "classic":
-          return payload[1].filter(({ category }) => category === type);
-
+          return payload[1]
         case "inspirational":
-          return payload[1].filter(({ category }) => category === type);
+          return payload[1]
 
         case "finance":
-          return payload[1].filter(({ category }) => category === type);
-
+          return payload[1]
         default:
           payload[1];
           break;

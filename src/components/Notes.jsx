@@ -27,6 +27,7 @@ import {
   limit,
   startAfter,
   doc,
+  where,
   deleteDoc,
   serverTimestamp,
   increment,
@@ -46,6 +47,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 
 function Notes({ bookId }) {
   const [issubmitComment, setsubmitComment] = useState(false);
+  const [toSeeMore, setisSeeMore] = useState(true);
   const [isCommentLoading, setisCommentLoading] = useState(true);
   const userData = useSelector(selectUsers);
   const userId = userData.currentUser.id;
@@ -73,7 +75,7 @@ function Notes({ bookId }) {
 
     const populateCommentSlice = async () => {
       const commentRef = collection(db, "Comments");
-      const queryData = query(commentRef, orderBy("time", "desc"), limit(2));
+      const queryData = query(commentRef, orderBy("time", "desc"), limit(4));
       const querySnapshot = await getDocs(queryData);
       const database = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -111,8 +113,8 @@ function Notes({ bookId }) {
         const numberArray = propertyNames.map(Number);
         const start = numberArray[numberArray.length - 2];
 
-        const startRange = start;
-        const endRange = end;
+        const startRange = start + 1;
+        const endRange = end + 1;
 
         let dynamicRangeObject = {};
 
@@ -139,46 +141,51 @@ function Notes({ bookId }) {
   console.log(uniqueUser);
   console.log(commentKeysId);
 
-  // let lastVisible;
-  // const getNextcomment = async () => {
-  //   setIsLoadMore(true);
-  //   // cosnt last_index_value = records[records.length - 1].created_at;
-  //   lastVisible = comments[comments.length - 1];
-  //   const time = lastVisible.time;
-  //   console.log("last", time);
-  //   try {
-  //     const commentsRef = collection(db, "Comments");
-  //     const queryData = query(
-  //       commentsRef,
-  //       orderBy("time", "desc"),
-  //       startAfter(time),
-  //       limit(4)
-  //     );
+  const getNextcomment = async () => {
+    let lastVisible;
+    setisSeeMore(false);
+    // cosnt last_index_value = records[records.length - 1].created_at;
+    lastVisible = comments[comments.length - 1];
+    const time = lastVisible.time;
+    console.log("last", time);
+    console.log(toSeeMore)
 
-  //     const querySnapshot = await getDocs(queryData);
+    // if ( ) return
+    try {
+      const commentsRef = collection(db, "Comments");
+      const queryData = query(
+        commentsRef,
+        orderBy("time", "desc"),
+        where("book_id", "==", bookId),
+        startAfter(time),
+        limit(2)
+      );
 
-  //     if (querySnapshot.empty) {
-  //       console.log("no more");
-  //       // setIsLoadMore(false);
-  //       // display nice toast
-  //       return;
-  //     }
+      const querySnapshot = await getDocs(queryData);
 
-  //     const database = querySnapshot.docs.map((doc) => ({
-  //       ...doc.data(),
-  //       id: doc.id,
-  //     }));
+      if (querySnapshot.empty) {
+        console.log("no more");
+        setisSeeMore(true);
 
-  //     dispatch2(returnFromDb(database));
-  //     // setIsLoadMore(false);
-  //   } catch (error) {
-  //     // Handle errors here
-  //     console.error("Error fetching data:", error);
-  //     // setIsLoadMore(false);
+        // display nice toast
+        return;
+      }
 
-  //     // You might want to set an error state or show a user-friendly message
-  //   }
-  // };
+      const database = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      dispatch2(returnFromDb(database));
+      setisSeeMore(false);
+    } catch (error) {
+      // Handle errors here
+      console.error("Error fetching data:", error);
+      // setIsLoadMore(false);
+
+      // You might want to set an error state or show a user-friendly message
+    }
+  };
   // add comment
 
   const handleAddComment = async (e) => {
@@ -196,9 +203,7 @@ function Notes({ bookId }) {
     const lastComment = database[database.length - 1];
     const newId = Number(lastComment.id) + 1;
 
-    
-      dispatch2(addNewCommentId(newId));
-  
+    dispatch2(addNewCommentId(newId));
 
     console.log(userState);
     console.log(newId);
@@ -318,10 +323,10 @@ function Notes({ bookId }) {
           </div>
         ) : (
           <section>
+            {comments.length === 0 && (
+              <p className="not-found">Be the First to comment!</p>
+            )}
             <div className="notes">
-              {comments.length === 0 && (
-                <p className="not-found">Be the First to comment!</p>
-              )}
               {comments?.map((comment) => (
                 <section key={comment.id} className="note-cont">
                   <Avatar sx={{ mt: 1, background: "" }}>
@@ -330,13 +335,13 @@ function Notes({ bookId }) {
                   <div className="note">
                     <div className="name-time">
                       <h3>{comment.name} .</h3>
-                      <div className="time-ago" >
-                      <ReactTimeAgo
-                        date={comment.createdTime}
-                        locale="en-Us"
-                        timeStyle="twitter"
-                      />
-                        </div>
+                      <div className="time-ago">
+                        <ReactTimeAgo
+                          date={comment.createdTime}
+                          locale="en-Us"
+                          timeStyle="twitter"
+                        />
+                      </div>
                     </div>
 
                     <p>{comment.text}</p>
@@ -365,7 +370,7 @@ function Notes({ bookId }) {
                       ))}
                       <p className="likes">
                         {comment.likes} like
-                        {comment.likes == 0 || comment.likes == 1 ? " " : "s"}
+                        {comment.likes == 0 || comment.likes == 1 ? "" : "s"}
                       </p>
                       <div
                         onClick={() => handleEraseNote(comment.id)}
@@ -377,6 +382,12 @@ function Notes({ bookId }) {
                   </div>
                 </section>
               ))}
+              {!toSeeMore && <p className="commentLoader">loading...</p>}
+              {comments.length  > 5 && (
+                  <div onClick={getNextcomment} className="comment-see-more">
+                    {toSeeMore && "...see more"}
+                  </div>
+                )}
             </div>
           </section>
         )}

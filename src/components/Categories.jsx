@@ -10,7 +10,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { StyledEngineProvider } from "@mui/material/styles";
 import { selectBooks } from "../store/booksSlice.js";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  orderBy,
+  limit,
+  query,
+  doc,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase/config.js";
 import { motion } from "framer-motion";
 import { fadeIn } from "../variants.js";
@@ -18,9 +26,9 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-const Categories = ({ setBookIsLoading, setshowCatchError }) => {
+const Categories = ({ setBookIsLoading, setshowCatchError,setshowMore }) => {
   //   const [category, setCategory] = useState("");
-  const [query, setQuery] = useState("");
+  const [queryValue, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const [categoryIsLoading, setCategoryLoading] = useState(true);
   const [value, setValue] = React.useState("all");
@@ -40,8 +48,43 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
       setIndex(itermIndex);
       setBookIsLoading(true);
       const selectedValue = e.target.value;
-      setValue(selectedValue)
-      const querySnapshot = await getDocs(collection(db, "Books"));
+      setValue(selectedValue);
+      // console.log(selectedValue);
+
+      if (selectedValue === "all") {
+        const booksRef = collection(db, "Books");
+        const queryData = query(booksRef, orderBy("title", "desc"), limit(6));
+
+        const querySnapshot = await getDocs(queryData);
+        const database = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+
+        dispatch2(selectedCategory([selectedValue, database]));
+        setBookIsLoading(false);
+      setshowMore(true)
+
+        return;
+      }
+
+      const booksRef = collection(db, "Books");
+      const queryData = query(
+        booksRef,
+        orderBy("title", "desc"),
+        where("category", "==", selectedValue)
+      );
+
+      const querySnapshot = await getDocs(queryData);
+
+      // if (querySnapshot.empty) {
+      //   console.log("no more");
+      //   // setisSeeMore(true);
+
+      //   // display nice toast
+      //   return;
+      // }
+
       const database = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -49,11 +92,10 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
       dispatch2(selectedCategory([selectedValue, database]));
 
       setBookIsLoading(false);
+      setshowMore(false)
       if (database.length > 0) setBookIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setIsLoadMore(false);
-      setshowCatchError(true);
     }
   };
 
@@ -63,7 +105,7 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
 
   const handleSearch = async () => {
     try {
-      if (!query) {
+      if (!queryValue) {
         alert("Please enter valid input...");
         return;
       }
@@ -76,7 +118,7 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
         id: doc.id,
       }));
 
-      dispatch2(searchBooks([query, database]));
+      dispatch2(searchBooks([queryValue, database]));
       setBookIsLoading(false);
       setQuery("");
     } catch (error) {
@@ -87,9 +129,6 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
       setshowCatchError(true);
     }
   };
-
-
-  
 
   return (
     <>
@@ -117,24 +156,26 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
                   key={button.id}
                   className="active-btn"
                   // component="button"
-                  
+
                   label={button.name}
                   sx={{
                     background: `${index === itermIndex && "#0d1f41"}`,
-                    
+
                     color: `${index === itermIndex ? "#ffff" : "#1a3363"}`,
                     fontWeight: { xs: 500, md: 600 },
                     fontSize: { md: "1rem" },
                     textTransform: "capitalize",
                     border: "0.7px solid #1a3363",
-                    mx: ".2rem"
+                    mx: ".2rem",
                     // fontFamily: "Montserrat Alternates,"
                   }}
                   variant="outlined"
                   value={button.name}
                   type="button"
                   onClick={(e) => handleCategories(e, itermIndex)}
-                >{button.name}</Button>
+                >
+                  {button.name}
+                </Button>
               ))}
             </Tabs>
           </div>
@@ -153,7 +194,7 @@ const Categories = ({ setBookIsLoading, setshowCatchError }) => {
                 sx={{ ml: 1, flex: 1, color: "#000", height: { xs: "10px" } }}
                 placeholder="Search a book..."
                 inputProps={{ "aria-label": "search" }}
-                value={query}
+                value={queryValue}
                 className="search-bar"
                 onChange={handleSearchTerm}
               />

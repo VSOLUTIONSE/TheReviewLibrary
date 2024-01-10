@@ -614,6 +614,7 @@ table tr th {
 }
 
 .notes {
+  position: relative;
   width: 80vw;
   padding: 10%;
   display: flex;
@@ -632,6 +633,26 @@ table tr th {
   /* justify-content: left; */
   /* align-items: center; */
   /* border: 2px solid red ; */
+}
+.comment-see-more {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 1%;
+  right: 10%;
+  cursor: pointer;
+  margin-top: 5%;
+}
+.commentLoader {
+  position: absolute;
+  bottom: 0.5%;
+  left: 50%;
+  right: 50%;
+  /* top: 2%; */
+  /* border: solid red 2px; */
+
+  
 }
 
 .notes .note .erase-note {
@@ -1131,7 +1152,6 @@ table tr th {
 @media (max-width: 768px) {
   .time-ago {
     font-size: 0.4rem;
-  margin-bottom: 7px;
-
+    margin-bottom: 7px;
   }
 }

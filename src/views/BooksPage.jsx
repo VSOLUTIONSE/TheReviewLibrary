@@ -30,8 +30,9 @@ function BooksPage() {
   const [showCatchError, setshowCatchError] = useState(false);
   const [bookIsLoading, setBookIsLoading] = useState(true);
   const [isloadMore, setIsLoadMore] = useState(false);
+  const [showMore, setshowMore] = useState(true);
 
-  const pageTitle = "📖 Explore Our Miraids of Inspirition";
+  const pageTitle = "📖 Explore Our Myraids of Inspirition";
 
   useEffect(() => {
     const populateBookSlice = async () => {
@@ -118,7 +119,7 @@ function BooksPage() {
         />
       }
       <div className="container">
-        <Categories setBookIsLoading={setBookIsLoading} />
+        <Categories setshowMore={setshowMore} setBookIsLoading={setBookIsLoading} />
         <Divider flexItem orientation="horizontal" sx={{ px: 5 }} />
         <h2 className="page-title">{pageTitle}</h2>
         <div className="books-container">
@@ -140,29 +141,31 @@ function BooksPage() {
           )}
         </div>
       </div>
-      <div className="bottom-loader">
-        {data.length === 0 ? (
-          ""
-        ) : (
-          <>
-            <div>
-              <svg className="arrows">
-                <path className="a1" d="M0 0 L30 32 L60 0"></path>
-                <path className="a2" d="M0 20 L30 52 L60 20"></path>
-                <path className="a3" d="M0 40 L30 72 L60 40"></path>
-              </svg>
-            </div>
-            {!isloadMore && (
-              <p onClick={getNextBookSlice} className="more">
-                <ReplayIcon /> <span>more books</span>
-              </p>
-            )}
-            <div className="css-spinners more">
-              {isloadMore && <Ellipsis size={40} color="#f9ad6a" />}
-            </div>
-          </>
-        )}
-      </div>
+      {showMore && (
+        <div className="bottom-loader">
+          {data.length === 0 ? (
+            ""
+          ) : (
+            <>
+              <div>
+                <svg className="arrows">
+                  <path className="a1" d="M0 0 L30 32 L60 0"></path>
+                  <path className="a2" d="M0 20 L30 52 L60 20"></path>
+                  <path className="a3" d="M0 40 L30 72 L60 40"></path>
+                </svg>
+              </div>
+              {!isloadMore && (
+                <p onClick={getNextBookSlice} className="more">
+                  <ReplayIcon /> <span>more books</span>
+                </p>
+              )}
+              <div className="css-spinners more">
+                {isloadMore && <Ellipsis size={40} color="#f9ad6a" />}
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </>
   );
 }

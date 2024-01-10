@@ -1,3 +1,4 @@
+import { RouteSharp } from "@mui/icons-material";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const notesSlice = createSlice({
@@ -13,7 +14,7 @@ export const notesSlice = createSlice({
     },
     returnFromDb: (notes, action) => {
       // console.log(action.payload)
-      return [...action.payload]
+      notes.push(...action.payload)
     },
     eraseNote: (notes, action) => {
       return notes.filter((note) => note.id != action.payload);
