@@ -21,7 +21,6 @@ import {
   collection,
   getDocs,
   setDoc,
-  addDoc,
   orderBy,
   query,
   limit,
@@ -68,10 +67,10 @@ function Notes({ bookId }) {
   const location = useLocation();
 
   useEffect(() => {
-    // if (comments.length > 0) {
-    //   setisCommentLoading(false);
-    //   return () => {};
-    // }
+    if (comments.length > 0) {
+      setisCommentLoading(false);
+      return () => {};
+    }
 
     const populateCommentSlice = async () => {
       const commentRef = collection(db, "Comments");
@@ -127,6 +126,8 @@ function Notes({ bookId }) {
           dispatch2(populatePropertyNames(propertyNames));
         }
       }
+
+      return ()=>{}
       // console.log(Uniqueuser);
       // console.log(propertyNames);
     };
